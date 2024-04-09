@@ -1,9 +1,12 @@
+param location string = 'germanywestcentral'
+param storageAccountName string = 'st-encoderasset'
+param functionAppStorageAccountName string = 'st-functionapp'
+
+
 param sites_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
 param vaults_vault138_name string = 'vault138'
-param storageAccounts_tomencfasa_name string = 'tomencfasa'
 param profiles_cdn_profile_tom_encoder_name string = 'cdn-profile-tom-encoder'
 param components_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
-param storageAccounts_tomencoderassetssa_name string = 'tomencoderassetssa'
 param workspaces_log_mcencoder_name string = 'log-mcencoder'
 param containerGroups_ffmpegcontainer_name string = 'ffmpegcontainer'
 param serverfarms_GermanyWestCentralLinuxDynamicPlan_name string = 'GermanyWestCentralLinuxDynamicPlan'
@@ -11,6 +14,74 @@ param databaseAccounts_tom_encoder_cosmos_account_name string = 'tom-encoder-cos
 param actionGroups_Application_Insights_Smart_Detection_name string = 'Application Insights Smart Detection'
 param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string = 'failure anomalies - tom-encoder-fa-api'
 param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
+
+// create storage account for media assets
+resource storageAccounts_tomencoderassetssa_name_resource 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: storageAccountName
+  location: location
+  tags: {
+    owner: 'tagValue'
+  }
+  sku: {
+    name: 'Standard_LRS'
+    tier: 'Standard'
+  }
+  kind: 'StorageV2'
+  properties: {
+    defaultToOAuthAuthentication: false
+    allowCrossTenantReplication: false
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: true
+    networkAcls: {
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
+      ipRules: []
+      defaultAction: 'Allow'
+    }
+    supportsHttpsTrafficOnly: true
+    encryption: {
+      services: {
+        file: {
+          keyType: 'Account'
+          enabled: true
+        }
+        blob: {
+          keyType: 'Account'
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+    }
+    accessTier: 'Hot'
+  }
+}
+
+module storageAccount 'storageaccount.bicep' = {
+  name: 'storageAccount'
+  params: {
+    location: location
+    storageAccountName: storageAccountName
+  }
+}
+
+//create storage account for function app
+
+module functionAppStorageAccount 'storageaccount.bicep' = {
+  name: 'functionAppStorageAccount'
+  params: {
+    location: location
+    storageAccountName: functionAppStorageAccountName
+  }
+
+}
+
+
+
+
+
+
+
 
 resource profiles_cdn_profile_tom_encoder_name_resource 'Microsoft.Cdn/profiles@2022-11-01-preview' = {
   name: profiles_cdn_profile_tom_encoder_name
@@ -26,7 +97,7 @@ resource profiles_cdn_profile_tom_encoder_name_resource 'Microsoft.Cdn/profiles@
 
 resource containerGroups_ffmpegcontainer_name_resource 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
   name: containerGroups_ffmpegcontainer_name
-  location: 'germanywestcentral'
+  location: location
   properties: {
     sku: 'Standard'
     containers: [
@@ -99,7 +170,7 @@ resource containerGroups_ffmpegcontainer_name_resource 'Microsoft.ContainerInsta
 
 resource databaseAccounts_tom_encoder_cosmos_account_name_resource 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
   name: databaseAccounts_tom_encoder_cosmos_account_name
-  location: 'Germany West Central'
+  location: location
   kind: 'GlobalDocumentDB'
   identity: {
     type: 'None'
@@ -130,7 +201,7 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_resource 'Microsoft.Do
     }
     locations: [
       {
-        locationName: 'Germany West Central'
+        locationName: location
         provisioningState: 'Succeeded'
         failoverPriority: 0
         isZoneRedundant: false
@@ -185,7 +256,7 @@ resource actionGroups_Application_Insights_Smart_Detection_name_resource 'micros
 
 resource components_tom_encoder_fa_api_name_resource 'microsoft.insights/components@2020-02-02' = {
   name: components_tom_encoder_fa_api_name
-  location: 'germanywestcentral'
+  location: location
   kind: 'web'
   properties: {
     Application_Type: 'web'
@@ -199,7 +270,7 @@ resource components_tom_encoder_fa_api_name_resource 'microsoft.insights/compone
 
 resource workspaces_log_mcencoder_name_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
   name: workspaces_log_mcencoder_name
-  location: 'germanywestcentral'
+  location: location
   properties: {
     sku: {
       name: 'pergb2018'
@@ -218,7 +289,7 @@ resource workspaces_log_mcencoder_name_resource 'Microsoft.OperationalInsights/w
 
 resource vaults_vault138_name_resource 'Microsoft.RecoveryServices/vaults@2023-08-01' = {
   name: vaults_vault138_name
-  location: 'germanywestcentral'
+  location: location
   sku: {
     name: 'RS0'
     tier: 'Standard'
@@ -245,89 +316,12 @@ resource vaults_vault138_name_resource 'Microsoft.RecoveryServices/vaults@2023-0
   }
 }
 
-resource storageAccounts_tomencfasa_name_resource 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: storageAccounts_tomencfasa_name
-  location: 'germanywestcentral'
-  tags: {
-    owner: 'tagValue'
-  }
-  sku: {
-    name: 'Standard_LRS'
-    tier: 'Standard'
-  }
-  kind: 'StorageV2'
-  properties: {
-    allowCrossTenantReplication: false
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: []
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      services: {
-        file: {
-          keyType: 'Account'
-          enabled: true
-        }
-        blob: {
-          keyType: 'Account'
-          enabled: true
-        }
-      }
-      keySource: 'Microsoft.Storage'
-    }
-    accessTier: 'Hot'
-  }
-}
 
-resource storageAccounts_tomencoderassetssa_name_resource 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: storageAccounts_tomencoderassetssa_name
-  location: 'germanywestcentral'
-  tags: {
-    owner: 'tagValue'
-  }
-  sku: {
-    name: 'Standard_LRS'
-    tier: 'Standard'
-  }
-  kind: 'StorageV2'
-  properties: {
-    defaultToOAuthAuthentication: false
-    allowCrossTenantReplication: false
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    allowSharedKeyAccess: true
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: []
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      services: {
-        file: {
-          keyType: 'Account'
-          enabled: true
-        }
-        blob: {
-          keyType: 'Account'
-          enabled: true
-        }
-      }
-      keySource: 'Microsoft.Storage'
-    }
-    accessTier: 'Hot'
-  }
-}
+
 
 resource serverfarms_GermanyWestCentralLinuxDynamicPlan_name_resource 'Microsoft.Web/serverfarms@2023-01-01' = {
   name: serverfarms_GermanyWestCentralLinuxDynamicPlan_name
-  location: 'Germany West Central'
+  location: location
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
@@ -502,7 +496,7 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_1d60ffaf_3404_4448_b68
 resource components_tom_encoder_fa_api_name_degradationindependencyduration 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'degradationindependencyduration'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'degradationindependencyduration'
@@ -523,7 +517,7 @@ resource components_tom_encoder_fa_api_name_degradationindependencyduration 'mic
 resource components_tom_encoder_fa_api_name_degradationinserverresponsetime 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'degradationinserverresponsetime'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'degradationinserverresponsetime'
@@ -544,7 +538,7 @@ resource components_tom_encoder_fa_api_name_degradationinserverresponsetime 'mic
 resource components_tom_encoder_fa_api_name_digestMailConfiguration 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'digestMailConfiguration'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'digestMailConfiguration'
@@ -565,7 +559,7 @@ resource components_tom_encoder_fa_api_name_digestMailConfiguration 'microsoft.i
 resource components_tom_encoder_fa_api_name_extension_billingdatavolumedailyspikeextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'extension_billingdatavolumedailyspikeextension'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'extension_billingdatavolumedailyspikeextension'
@@ -586,7 +580,7 @@ resource components_tom_encoder_fa_api_name_extension_billingdatavolumedailyspik
 resource components_tom_encoder_fa_api_name_extension_canaryextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'extension_canaryextension'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'extension_canaryextension'
@@ -607,7 +601,7 @@ resource components_tom_encoder_fa_api_name_extension_canaryextension 'microsoft
 resource components_tom_encoder_fa_api_name_extension_exceptionchangeextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'extension_exceptionchangeextension'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'extension_exceptionchangeextension'
@@ -628,7 +622,7 @@ resource components_tom_encoder_fa_api_name_extension_exceptionchangeextension '
 resource components_tom_encoder_fa_api_name_extension_memoryleakextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'extension_memoryleakextension'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'extension_memoryleakextension'
@@ -649,7 +643,7 @@ resource components_tom_encoder_fa_api_name_extension_memoryleakextension 'micro
 resource components_tom_encoder_fa_api_name_extension_securityextensionspackage 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'extension_securityextensionspackage'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'extension_securityextensionspackage'
@@ -670,7 +664,7 @@ resource components_tom_encoder_fa_api_name_extension_securityextensionspackage 
 resource components_tom_encoder_fa_api_name_extension_traceseveritydetector 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'extension_traceseveritydetector'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'extension_traceseveritydetector'
@@ -691,7 +685,7 @@ resource components_tom_encoder_fa_api_name_extension_traceseveritydetector 'mic
 resource components_tom_encoder_fa_api_name_longdependencyduration 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'longdependencyduration'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'longdependencyduration'
@@ -712,7 +706,7 @@ resource components_tom_encoder_fa_api_name_longdependencyduration 'microsoft.in
 resource components_tom_encoder_fa_api_name_migrationToAlertRulesCompleted 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'migrationToAlertRulesCompleted'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'migrationToAlertRulesCompleted'
@@ -733,7 +727,7 @@ resource components_tom_encoder_fa_api_name_migrationToAlertRulesCompleted 'micr
 resource components_tom_encoder_fa_api_name_slowpageloadtime 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'slowpageloadtime'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'slowpageloadtime'
@@ -754,7 +748,7 @@ resource components_tom_encoder_fa_api_name_slowpageloadtime 'microsoft.insights
 resource components_tom_encoder_fa_api_name_slowserverresponsetime 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
   parent: components_tom_encoder_fa_api_name_resource
   name: 'slowserverresponsetime'
-  location: 'germanywestcentral'
+  location: location
   properties: {
     RuleDefinitions: {
       Name: 'slowserverresponsetime'
@@ -8100,7 +8094,7 @@ resource vaults_vault138_name_default 'Microsoft.RecoveryServices/vaults/replica
   name: 'default'
   properties: {}
 }
-
+/*
 resource storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccounts/blobServices@2023-01-01' = {
   parent: storageAccounts_tomencfasa_name_resource
   name: 'default'
@@ -8117,7 +8111,7 @@ resource storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccou
       enabled: false
     }
   }
-}
+}*/
 
 resource storageAccounts_tomencoderassetssa_name_default 'Microsoft.Storage/storageAccounts/blobServices@2023-01-01' = {
   parent: storageAccounts_tomencoderassetssa_name_resource
@@ -8155,7 +8149,7 @@ resource storageAccounts_tomencoderassetssa_name_default 'Microsoft.Storage/stor
   }
 }
 
-resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccounts/fileServices@2023-01-01' = {
+/*resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccounts/fileServices@2023-01-01' = {
   parent: storageAccounts_tomencfasa_name_resource
   name: 'default'
   sku: {
@@ -8174,7 +8168,7 @@ resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencfa
       days: 7
     }
   }
-}
+}*/
 
 resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencoderassetssa_name_default 'Microsoft.Storage/storageAccounts/fileServices@2023-01-01' = {
   parent: storageAccounts_tomencoderassetssa_name_resource
@@ -8197,7 +8191,7 @@ resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencod
   }
 }
 
-resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccounts/queueServices@2023-01-01' = {
+/*resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccounts/queueServices@2023-01-01' = {
   parent: storageAccounts_tomencfasa_name_resource
   name: 'default'
   properties: {
@@ -8205,7 +8199,7 @@ resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_tomencf
       corsRules: []
     }
   }
-}
+}*/
 
 resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_tomencoderassetssa_name_default 'Microsoft.Storage/storageAccounts/queueServices@2023-01-01' = {
   parent: storageAccounts_tomencoderassetssa_name_resource
@@ -8217,15 +8211,15 @@ resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_tomenco
   }
 }
 
-resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccounts/tableServices@2023-01-01' = {
-  parent: storageAccounts_tomencfasa_name_resource
-  name: 'default'
-  properties: {
-    cors: {
-      corsRules: []
-    }
-  }
-}
+//resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_tomencfasa_name_default 'Microsoft.Storage/storageAccounts/tableServices@2023-01-01' = {
+//  parent: functionAppStorageAccount
+//  name: 'default'
+//  properties: {
+//    cors: {
+//      corsRules: []
+//    }
+//  }
+//}
 
 resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_tomencoderassetssa_name_default 'Microsoft.Storage/storageAccounts/tableServices@2023-01-01' = {
   parent: storageAccounts_tomencoderassetssa_name_resource
@@ -8239,7 +8233,7 @@ resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_tomenco
 
 resource sites_tom_encoder_fa_api_name_resource 'Microsoft.Web/sites@2023-01-01' = {
   name: sites_tom_encoder_fa_api_name
-  location: 'Germany West Central'
+  location: location
   tags: {
     'hidden-link: /app-insights-resource-id': '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/grp-mcencoder/providers/microsoft.insights/components/tom-encoder-fa-api'
     'hidden-link: /app-insights-instrumentation-key': 'a3b40d72-3e98-4d13-8001-7af42ca5ca1c'
@@ -8297,7 +8291,7 @@ resource sites_tom_encoder_fa_api_name_resource 'Microsoft.Web/sites@2023-01-01'
 resource sites_tom_encoder_fa_api_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'ftp'
-  location: 'Germany West Central'
+  location: location
   tags: {
     'hidden-link: /app-insights-resource-id': '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/grp-mcencoder/providers/microsoft.insights/components/tom-encoder-fa-api'
     'hidden-link: /app-insights-instrumentation-key': 'a3b40d72-3e98-4d13-8001-7af42ca5ca1c'
@@ -8311,7 +8305,7 @@ resource sites_tom_encoder_fa_api_name_ftp 'Microsoft.Web/sites/basicPublishingC
 resource sites_tom_encoder_fa_api_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'scm'
-  location: 'Germany West Central'
+  location: location
   tags: {
     'hidden-link: /app-insights-resource-id': '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/grp-mcencoder/providers/microsoft.insights/components/tom-encoder-fa-api'
     'hidden-link: /app-insights-instrumentation-key': 'a3b40d72-3e98-4d13-8001-7af42ca5ca1c'
@@ -8325,7 +8319,7 @@ resource sites_tom_encoder_fa_api_name_scm 'Microsoft.Web/sites/basicPublishingC
 resource sites_tom_encoder_fa_api_name_web 'Microsoft.Web/sites/config@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'web'
-  location: 'Germany West Central'
+  location: location
   tags: {
     'hidden-link: /app-insights-resource-id': '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/grp-mcencoder/providers/microsoft.insights/components/tom-encoder-fa-api'
     'hidden-link: /app-insights-instrumentation-key': 'a3b40d72-3e98-4d13-8001-7af42ca5ca1c'
@@ -8414,7 +8408,7 @@ resource sites_tom_encoder_fa_api_name_web 'Microsoft.Web/sites/config@2023-01-0
 resource sites_tom_encoder_fa_api_name_ChangeStatus 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'ChangeStatus'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/ChangeStatus.dat'
@@ -8429,7 +8423,7 @@ resource sites_tom_encoder_fa_api_name_ChangeStatus 'Microsoft.Web/sites/functio
 resource sites_tom_encoder_fa_api_name_CreateEncoderJob 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'CreateEncoderJob'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/CreateEncoderJob.dat'
@@ -8444,7 +8438,7 @@ resource sites_tom_encoder_fa_api_name_CreateEncoderJob 'Microsoft.Web/sites/fun
 resource sites_tom_encoder_fa_api_name_CreateEncoderPreset 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'CreateEncoderPreset'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/CreateEncoderPreset.dat'
@@ -8459,7 +8453,7 @@ resource sites_tom_encoder_fa_api_name_CreateEncoderPreset 'Microsoft.Web/sites/
 resource sites_tom_encoder_fa_api_name_EnqueueEncoderJob 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'EnqueueEncoderJob'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/EnqueueEncoderJob.dat'
@@ -8473,7 +8467,7 @@ resource sites_tom_encoder_fa_api_name_EnqueueEncoderJob 'Microsoft.Web/sites/fu
 resource sites_tom_encoder_fa_api_name_TestChangeStatus 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestChangeStatus'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestChangeStatus.dat'
@@ -8488,7 +8482,7 @@ resource sites_tom_encoder_fa_api_name_TestChangeStatus 'Microsoft.Web/sites/fun
 resource sites_tom_encoder_fa_api_name_TestClearFileShare 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestClearFileShare'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestClearFileShare.dat'
@@ -8503,7 +8497,7 @@ resource sites_tom_encoder_fa_api_name_TestClearFileShare 'Microsoft.Web/sites/f
 resource sites_tom_encoder_fa_api_name_TestCosmosDbWrite 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestCosmosDbWrite'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestCosmosDbWrite.dat'
@@ -8518,7 +8512,7 @@ resource sites_tom_encoder_fa_api_name_TestCosmosDbWrite 'Microsoft.Web/sites/fu
 resource sites_tom_encoder_fa_api_name_TestCreateBlobDirectory 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestCreateBlobDirectory'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestCreateBlobDirectory.dat'
@@ -8533,7 +8527,7 @@ resource sites_tom_encoder_fa_api_name_TestCreateBlobDirectory 'Microsoft.Web/si
 resource sites_tom_encoder_fa_api_name_TestCreateContainerInstance 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestCreateContainerInstance'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestCreateContainerInstance.dat'
@@ -8548,7 +8542,7 @@ resource sites_tom_encoder_fa_api_name_TestCreateContainerInstance 'Microsoft.We
 resource sites_tom_encoder_fa_api_name_TestCreateStorageAccount 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestCreateStorageAccount'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestCreateStorageAccount.dat'
@@ -8563,7 +8557,7 @@ resource sites_tom_encoder_fa_api_name_TestCreateStorageAccount 'Microsoft.Web/s
 resource sites_tom_encoder_fa_api_name_TestEndpoint 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestEndpoint'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestEndpoint.dat'
@@ -8578,7 +8572,7 @@ resource sites_tom_encoder_fa_api_name_TestEndpoint 'Microsoft.Web/sites/functio
 resource sites_tom_encoder_fa_api_name_TestMoveToBlob 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestMoveToBlob'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestMoveToBlob.dat'
@@ -8593,7 +8587,7 @@ resource sites_tom_encoder_fa_api_name_TestMoveToBlob 'Microsoft.Web/sites/funct
 resource sites_tom_encoder_fa_api_name_TestMoveToFileShare 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestMoveToFileShare'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestMoveToFileShare.dat'
@@ -8608,7 +8602,7 @@ resource sites_tom_encoder_fa_api_name_TestMoveToFileShare 'Microsoft.Web/sites/
 resource sites_tom_encoder_fa_api_name_TestStorageEncoderJobsQueueWrite 'Microsoft.Web/sites/functions@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: 'TestStorageEncoderJobsQueueWrite'
-  location: 'Germany West Central'
+  location: location
   properties: {
     script_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/home/site/wwwroot/API.dll'
     test_data_href: 'https://tom-encoder-fa-api.azurewebsites.net/admin/vfs/tmp/FunctionsData/TestStorageEncoderJobsQueueWrite.dat'
@@ -8623,7 +8617,7 @@ resource sites_tom_encoder_fa_api_name_TestStorageEncoderJobsQueueWrite 'Microso
 resource sites_tom_encoder_fa_api_name_sites_tom_encoder_fa_api_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
   name: '${sites_tom_encoder_fa_api_name}.azurewebsites.net'
-  location: 'Germany West Central'
+  location: location
   properties: {
     siteName: 'tom-encoder-fa-api'
     hostNameType: 'Verified'
@@ -8843,7 +8837,7 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_e21b5273_947d_4561_8cc
   }
 }
 
-resource storageAccounts_tomencfasa_name_default_azure_webjobs_hosts 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+/*resource storageAccounts_tomencfasa_name_default_azure_webjobs_hosts 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
   parent: storageAccounts_tomencfasa_name_default
   name: 'azure-webjobs-hosts'
   properties: {
@@ -8891,7 +8885,7 @@ resource storageAccounts_tomencoderassetssa_name_default_filestoragecontainer 'M
   ]
 }
 
-resource storageAccounts_tomencfasa_name_default_function_releases 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+/*resource storageAccounts_tomencfasa_name_default_function_releases 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
   parent: storageAccounts_tomencfasa_name_default
   name: 'function-releases'
   properties: {
@@ -8921,7 +8915,7 @@ resource storageAccounts_tomencfasa_name_default_scm_releases 'Microsoft.Storage
   dependsOn: [
     storageAccounts_tomencfasa_name_resource
   ]
-}
+}*/
 
 resource storageAccounts_tomencoderassetssa_name_default_assets_share 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
   parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencoderassetssa_name_default
@@ -8949,7 +8943,7 @@ resource storageAccounts_tomencoderassetssa_name_default_scripts_share 'Microsof
   ]
 }
 
-resource storageAccounts_tomencfasa_name_default_tom_encoder_fa_apic4a91dbecbdd 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+/*resource storageAccounts_tomencfasa_name_default_tom_encoder_fa_apic4a91dbecbdd 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
   parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencfasa_name_default
   name: 'tom-encoder-fa-apic4a91dbecbdd'
   properties: {
@@ -9049,4 +9043,4 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db_TestRec
     databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db
     databaseAccounts_tom_encoder_cosmos_account_name_resource
   ]
-}
+}*/
