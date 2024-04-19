@@ -1,7 +1,8 @@
 param storageAccountName string
-param location string
+param location string 
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
   name: storageAccountName
   location: location
   tags: {
@@ -41,3 +42,5 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     accessTier: 'Hot'
   }
 }
+
+

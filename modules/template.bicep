@@ -1,9 +1,9 @@
 param location string = 'germanywestcentral'
 param storageAccountName string = 'st-encoderasset'
 param functionAppStorageAccountName string = 'st-functionapp'
-
-
 param sites_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
+
+
 param vaults_vault138_name string = 'vault138'
 param profiles_cdn_profile_tom_encoder_name string = 'cdn-profile-tom-encoder'
 param components_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
@@ -16,7 +16,7 @@ param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string =
 param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
 
 // create storage account for media assets
-resource storageAccounts_tomencoderassetssa_name_resource 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
   name: storageAccountName
   location: location
   tags: {
@@ -57,44 +57,155 @@ resource storageAccounts_tomencoderassetssa_name_resource 'Microsoft.Storage/sto
   }
 }
 
-module storageAccount 'storageaccount.bicep' = {
-  name: 'storageAccount'
-  params: {
-    location: location
-    storageAccountName: storageAccountName
-  }
-}
-
 //create storage account for function app
-
-module functionAppStorageAccount 'storageaccount.bicep' = {
-  name: 'functionAppStorageAccount'
-  params: {
-    location: location
-    storageAccountName: functionAppStorageAccountName
+resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
+  name: functionAppStorageAccountName
+  location: location
+  tags: {
+    owner: 'tagValue'
   }
-
-}
-
-
-
-
-
-
-
-
-resource profiles_cdn_profile_tom_encoder_name_resource 'Microsoft.Cdn/profiles@2022-11-01-preview' = {
-  name: profiles_cdn_profile_tom_encoder_name
-  location: 'Global'
   sku: {
-    name: 'Standard_Microsoft'
+    name: 'Standard_LRS'
+    tier: 'Standard'
   }
-  kind: 'cdn'
+  kind: 'StorageV2'
   properties: {
-    extendedProperties: {}
+    defaultToOAuthAuthentication: false
+    allowCrossTenantReplication: false
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: true
+    networkAcls: {
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
+      ipRules: []
+      defaultAction: 'Allow'
+    }
+    supportsHttpsTrafficOnly: true
+    encryption: {
+      services: {
+        file: {
+          keyType: 'Account'
+          enabled: true
+        }
+        blob: {
+          keyType: 'Account'
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+    }
+    accessTier: 'Hot'
   }
 }
 
+//create queue
+resource storageAccountQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2023-01-01' = {
+  name: '${functionAppStorageAccount.name}/default/encoderjobs-queue'
+  properties: {
+    metadata: {}
+  }
+  dependsOn: [
+    functionAppStorageAccount
+  ]
+}
+
+
+// create file share
+resource storageAccountAssetFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+  name: '${storageAccount.name}/default/assets-share'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+  dependsOn: [
+    storageAccount
+  ]
+}
+
+// create script share
+resource storageAccountScriptFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+  name: '${storageAccount.name}/default/scripts-share'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+}
+
+
+// create blob storage
+resource storageAccountContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+  name: '${storageAccount.name}/default/filestoragecontainer'
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    publicAccess: 'Container'
+  }
+  dependsOn: [
+    storageAccount
+  ]
+}
+
+
+// create function app
+resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
+  name: sites_tom_encoder_fa_api_name
+  location: location
+  kind: 'functionapp,linux'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: '${sites_tom_encoder_fa_api_name}.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: '${sites_tom_encoder_fa_api_name}.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: resourceGroup().id
+    reserved: true
+    isXenon: false
+    hyperV: false
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      linuxFxVersion: 'DOTNET-ISOLATED|8.0'
+      acrUseManagedIdentityCreds: false
+      alwaysOn: false
+      http20Enabled: true
+      functionAppScaleLimit: 200
+      minimumElasticInstanceCount: 0
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    customDomainVerificationId: '517B90CD51655432EB5DD9D88E4493ABCFD99BDA4241179C0DA8BC449D4EC896'
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: false
+    redundancyMode: 'None'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+// create cosmos DB
 resource databaseAccounts_tom_encoder_cosmos_account_name_resource 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
   name: databaseAccounts_tom_encoder_cosmos_account_name
   location: location
@@ -147,6 +258,20 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_resource 'Microsoft.Do
     }
     networkAclBypassResourceIds: []
     keysMetadata: {}
+  }
+}
+
+
+
+resource profiles_cdn_profile_tom_encoder_name_resource 'Microsoft.Cdn/profiles@2022-11-01-preview' = {
+  name: profiles_cdn_profile_tom_encoder_name
+  location: 'Global'
+  sku: {
+    name: 'Standard_Microsoft'
+  }
+  kind: 'cdn'
+  properties: {
+    extendedProperties: {}
   }
 }
 
@@ -276,57 +401,7 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db 'Micros
   }
 }
 
-resource sites_tom_encoder_fa_api_name_resource 'Microsoft.Web/sites@2023-01-01' = {
-  name: sites_tom_encoder_fa_api_name
-  location: location
-  kind: 'functionapp,linux'
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    enabled: true
-    hostNameSslStates: [
-      {
-        name: '${sites_tom_encoder_fa_api_name}.azurewebsites.net'
-        sslState: 'Disabled'
-        hostType: 'Standard'
-      }
-      {
-        name: '${sites_tom_encoder_fa_api_name}.scm.azurewebsites.net'
-        sslState: 'Disabled'
-        hostType: 'Repository'
-      }
-    ]
-    serverFarmId: serverfarms_GermanyWestCentralLinuxDynamicPlan_name_resource.id
-    reserved: true
-    isXenon: false
-    hyperV: false
-    vnetRouteAllEnabled: false
-    vnetImagePullEnabled: false
-    vnetContentShareEnabled: false
-    siteConfig: {
-      numberOfWorkers: 1
-      linuxFxVersion: 'DOTNET-ISOLATED|8.0'
-      acrUseManagedIdentityCreds: false
-      alwaysOn: false
-      http20Enabled: true
-      functionAppScaleLimit: 200
-      minimumElasticInstanceCount: 0
-    }
-    scmSiteAlsoStopped: false
-    clientAffinityEnabled: false
-    clientCertEnabled: false
-    clientCertMode: 'Required'
-    hostNamesDisabled: false
-    customDomainVerificationId: '517B90CD51655432EB5DD9D88E4493ABCFD99BDA4241179C0DA8BC449D4EC896'
-    containerSize: 0
-    dailyMemoryTimeQuota: 0
-    httpsOnly: false
-    redundancyMode: 'None'
-    storageAccountRequired: false
-    keyVaultReferenceIdentity: 'SystemAssigned'
-  }
-}
+
 
 resource sites_tom_encoder_fa_api_name_web 'Microsoft.Web/sites/config@2023-01-01' = {
   parent: sites_tom_encoder_fa_api_name_resource
@@ -561,55 +636,9 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_e21b5273_947d_4561_8cc
   }
 }
 
-resource storageAccounts_tomencoderassetssa_name_default_filestoragecontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
-  parent: storageAccounts_tomencoderassetssa_name_default
-  name: 'filestoragecontainer'
-  properties: {
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
-    defaultEncryptionScope: '$account-encryption-key'
-    denyEncryptionScopeOverride: false
-    publicAccess: 'Container'
-  }
-  dependsOn: [
-    storageAccounts_tomencoderassetssa_name_resource
-  ]
-}
 
-resource storageAccounts_tomencoderassetssa_name_default_assets_share 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
-  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencoderassetssa_name_default
-  name: 'assets-share'
-  properties: {
-    accessTier: 'TransactionOptimized'
-    shareQuota: 102400
-    enabledProtocols: 'SMB'
-  }
-  dependsOn: [
-    storageAccounts_tomencoderassetssa_name_resource
-  ]
-}
 
-resource storageAccounts_tomencoderassetssa_name_default_scripts_share 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
-  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_tomencoderassetssa_name_default
-  name: 'scripts-share'
-  properties: {
-    accessTier: 'TransactionOptimized'
-    shareQuota: 102400
-    enabledProtocols: 'SMB'
-  }
-  dependsOn: [
-    storageAccounts_tomencoderassetssa_name_resource
-  ]
-}
 
-resource storageAccounts_tomencfasa_name_default_encoderjobs_queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2023-01-01' = {
-  parent: Microsoft_Storage_storageAccounts_queueServices_storageAccounts_tomencfasa_name_default
-  name: 'encoderjobs-queue'
-  properties: {
-    metadata: {}
-  }
-  dependsOn: [
-    storageAccounts_tomencfasa_name_resource
-  ]
-}
+
+
+
