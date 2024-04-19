@@ -10,7 +10,7 @@ param components_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
 param workspaces_log_mcencoder_name string = 'log-mcencoder'
 param containerGroups_ffmpegcontainer_name string = 'ffmpegcontainer'
 param serverfarms_GermanyWestCentralLinuxDynamicPlan_name string = 'GermanyWestCentralLinuxDynamicPlan'
-param databaseAccounts_tom_encoder_cosmos_account_name string = 'tom-encoder-cosmos-account'
+param cosmosDBAccountName string = 'tom-encoder-cosmos-account'
 param actionGroups_Application_Insights_Smart_Detection_name string = 'Application Insights Smart Detection'
 param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string = 'failure anomalies - tom-encoder-fa-api'
 param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
@@ -110,7 +110,6 @@ resource storageAccountQueue 'Microsoft.Storage/storageAccounts/queueServices/qu
   ]
 }
 
-
 // create file share
 resource storageAccountAssetFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
   name: '${storageAccount.name}/default/assets-share'
@@ -150,7 +149,6 @@ resource storageAccountContainer 'Microsoft.Storage/storageAccounts/blobServices
     storageAccount
   ]
 }
-
 
 // create function app
 resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
@@ -206,8 +204,8 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
 }
 
 // create cosmos DB
-resource databaseAccounts_tom_encoder_cosmos_account_name_resource 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
-  name: databaseAccounts_tom_encoder_cosmos_account_name
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
+  name: cosmosDBAccountName
   location: location
   kind: 'GlobalDocumentDB'
   identity: {
@@ -259,6 +257,101 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_resource 'Microsoft.Do
     networkAclBypassResourceIds: []
     keysMetadata: {}
   }
+}
+
+// create cosmos DB SQL database
+resource cosmosDBSQLDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
+  parent: cosmosDBAccount
+  name: 'tom-encoder-db'
+  properties: {
+    resource: {
+      id: 'tom-encoder-db'
+    }
+  }
+}
+
+// create cosmos DB SQL container "EncoderJobs"
+resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db_EncoderJobs 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
+  parent: cosmosDBSQLDatabase
+  name: 'EncoderJobs'
+  properties: {
+    resource: {
+      id: 'EncoderJobs'
+      indexingPolicy: {
+        indexingMode: 'consistent'
+        automatic: true
+        includedPaths: [
+          {
+            path: '/*'
+          }
+        ]
+        excludedPaths: [
+          {
+            path: '/"_etag"/?'
+          }
+        ]
+      }
+      partitionKey: {
+        paths: [
+          '/id'
+        ]
+        kind: 'Hash'
+      }
+      uniqueKeyPolicy: {
+        uniqueKeys: []
+      }
+      conflictResolutionPolicy: {
+        mode: 'LastWriterWins'
+        conflictResolutionPath: '/_ts'
+      }
+      computedProperties: []
+    }
+  }
+  dependsOn: [
+    cosmosDBAccount
+  ]
+}
+
+// create cosmos DB SQL container "EncoderPresets"
+resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db_EncoderPresets 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
+  parent: cosmosDBSQLDatabase
+  name: 'EncoderPresets'
+  properties: {
+    resource: {
+      id: 'EncoderPresets'
+      indexingPolicy: {
+        indexingMode: 'consistent'
+        automatic: true
+        includedPaths: [
+          {
+            path: '/*'
+          }
+        ]
+        excludedPaths: [
+          {
+            path: '/"_etag"/?'
+          }
+        ]
+      }
+      partitionKey: {
+        paths: [
+          '/id'
+        ]
+        kind: 'Hash'
+      }
+      uniqueKeyPolicy: {
+        uniqueKeys: []
+      }
+      conflictResolutionPolicy: {
+        mode: 'LastWriterWins'
+        conflictResolutionPath: '/_ts'
+      }
+      computedProperties: []
+    }
+  }
+  dependsOn: [
+    cosmosDBAccount
+  ]
 }
 
 
@@ -391,15 +484,7 @@ resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder 'Microso
   }
 }
 
-resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
-  parent: databaseAccounts_tom_encoder_cosmos_account_name_resource
-  name: 'tom-encoder-db'
-  properties: {
-    resource: {
-      id: 'tom-encoder-db'
-    }
-  }
-}
+
 
 
 
@@ -504,89 +589,11 @@ resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_
   ]
 }
 
-resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db_EncoderJobs 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
-  parent: databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db
-  name: 'EncoderJobs'
-  properties: {
-    resource: {
-      id: 'EncoderJobs'
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      uniqueKeyPolicy: {
-        uniqueKeys: []
-      }
-      conflictResolutionPolicy: {
-        mode: 'LastWriterWins'
-        conflictResolutionPath: '/_ts'
-      }
-      computedProperties: []
-    }
-  }
-  dependsOn: [
-    databaseAccounts_tom_encoder_cosmos_account_name_resource
-  ]
-}
 
-resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db_EncoderPresets 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
-  parent: databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db
-  name: 'EncoderPresets'
-  properties: {
-    resource: {
-      id: 'EncoderPresets'
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      uniqueKeyPolicy: {
-        uniqueKeys: []
-      }
-      conflictResolutionPolicy: {
-        mode: 'LastWriterWins'
-        conflictResolutionPath: '/_ts'
-      }
-      computedProperties: []
-    }
-  }
-  dependsOn: [
-    databaseAccounts_tom_encoder_cosmos_account_name_resource
-  ]
-}
 
-resource databaseAccounts_tom_encoder_cosmos_account_name_1ef2606b_b668_42d2_949a_ffa13987a08b 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-11-15' = {
+
+
+/*resource databaseAccounts_tom_encoder_cosmos_account_name_1ef2606b_b668_42d2_949a_ffa13987a08b 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-11-15' = {
   parent: databaseAccounts_tom_encoder_cosmos_account_name_resource
   name: '1ef2606b-b668-42d2-949a-ffa13987a08b'
   properties: {
@@ -634,7 +641,7 @@ resource databaseAccounts_tom_encoder_cosmos_account_name_e21b5273_947d_4561_8cc
     principalId: '6e8a2b9b-cf63-426b-b944-b5611c268c45'
     scope: '${databaseAccounts_tom_encoder_cosmos_account_name_resource.id}/dbs/tom-encoder-db/colls/EncoderPresets'
   }
-}
+}*/
 
 
 
