@@ -16,86 +16,20 @@ param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string =
 param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
 
 // create storage account for media assets
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
-  name: storageAccountName
-  location: location
-  tags: {
-    owner: 'tagValue'
-  }
-  sku: {
-    name: 'Standard_LRS'
-    tier: 'Standard'
-  }
-  kind: 'StorageV2'
-  properties: {
-    defaultToOAuthAuthentication: false
-    allowCrossTenantReplication: false
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    allowSharedKeyAccess: true
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: []
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      services: {
-        file: {
-          keyType: 'Account'
-          enabled: true
-        }
-        blob: {
-          keyType: 'Account'
-          enabled: true
-        }
-      }
-      keySource: 'Microsoft.Storage'
-    }
-    accessTier: 'Hot'
+module storageAccount 'modules/storageaccount.bicep' = {
+  name: 'storageAccount'
+  params: {
+    location: location
+    storageAccountName: storageAccountName
   }
 }
 
 //create storage account for function app
-resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
-  name: functionAppStorageAccountName
-  location: location
-  tags: {
-    owner: 'tagValue'
-  }
-  sku: {
-    name: 'Standard_LRS'
-    tier: 'Standard'
-  }
-  kind: 'StorageV2'
-  properties: {
-    defaultToOAuthAuthentication: false
-    allowCrossTenantReplication: false
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    allowSharedKeyAccess: true
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: []
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      services: {
-        file: {
-          keyType: 'Account'
-          enabled: true
-        }
-        blob: {
-          keyType: 'Account'
-          enabled: true
-        }
-      }
-      keySource: 'Microsoft.Storage'
-    }
-    accessTier: 'Hot'
+module functionAppStorageAccount 'modules/storageaccount.bicep'= {
+  name: 'functionAppStorageAccount'
+  params: {
+    location: location
+    storageAccountName: functionAppStorageAccountName
   }
 }
 
