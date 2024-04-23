@@ -2,6 +2,7 @@ param location string = 'germanywestcentral'
 param storageAccountName string = 'st-encoderasset'
 param functionAppStorageAccountName string = 'st-functionapp'
 param sites_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
+param blobContainerName string = 'assets-storage-container'
 
 
 param vaults_vault138_name string = 'vault138'
@@ -63,19 +64,12 @@ module scriptFileShare 'modules/fileshare.bicep' = {
 
 
 // create blob storage
-resource storageAccountContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
-  name: '${storageAccount.name}/default/filestoragecontainer'
-  properties: {
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
-    defaultEncryptionScope: '$account-encryption-key'
-    denyEncryptionScopeOverride: false
-    publicAccess: 'Container'
+module blobContainer 'modules/blobcontainer.bicep' = {
+  name: 'blobContainer'
+  params: {
+    storageAccountName: storageAccountName
+    blobContainerName: blobContainerName
   }
-  dependsOn: [
-    storageAccount
-  ]
 }
 
 // create function app
