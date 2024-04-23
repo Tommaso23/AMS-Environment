@@ -3,6 +3,7 @@ param storageAccountName string = 'st-encoderasset'
 param functionAppStorageAccountName string = 'st-functionapp'
 param sites_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
 param blobContainerName string = 'assets-storage-container'
+param queueName string = 'functionapp-queue'
 
 
 param vaults_vault138_name string = 'vault138'
@@ -35,14 +36,12 @@ module functionAppStorageAccount 'modules/storageaccount.bicep'= {
 }
 
 //create queue
-resource storageAccountQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2023-01-01' = {
-  name: '${functionAppStorageAccount.name}/default/encoderjobs-queue'
-  properties: {
-    metadata: {}
+module queue 'modules/queue.bicep' = {
+  name: 'queue'
+  params: {
+    storageAccountName: functionAppStorageAccountName
+    queueName: queueName
   }
-  dependsOn: [
-    functionAppStorageAccount
-  ]
 }
 
 module fileShare 'modules/fileshare.bicep' = {
