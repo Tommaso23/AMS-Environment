@@ -44,26 +44,20 @@ resource storageAccountQueue 'Microsoft.Storage/storageAccounts/queueServices/qu
   ]
 }
 
-// create file share
-resource storageAccountAssetFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
-  name: '${storageAccount.name}/default/assets-share'
-  properties: {
-    accessTier: 'TransactionOptimized'
-    shareQuota: 102400
-    enabledProtocols: 'SMB'
+module fileShare 'modules/fileshare.bicep' = {
+  name: 'fileShare'
+  params: {
+    storageAccountName: storageAccountName
+    fileShareName: 'assets-share'
   }
-  dependsOn: [
-    storageAccount
-  ]
 }
 
 // create script share
-resource storageAccountScriptFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
-  name: '${storageAccount.name}/default/scripts-share'
-  properties: {
-    accessTier: 'TransactionOptimized'
-    shareQuota: 102400
-    enabledProtocols: 'SMB'
+module scriptFileShare 'modules/fileshare.bicep' = {
+  name: 'ScriptFileShare'
+  params: {
+    storageAccountName: storageAccountName
+    fileShareName: 'script-share'
   }
 }
 
