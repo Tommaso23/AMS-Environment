@@ -35,7 +35,6 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
     locations: [
       {
         locationName: location
-        provisioningState: 'Succeeded'
         failoverPriority: 0
         isZoneRedundant: false
       }
