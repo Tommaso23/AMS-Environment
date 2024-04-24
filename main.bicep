@@ -8,7 +8,7 @@ param cosmosdbaccountName string = 'cosmos-mediaservices-01'
 param cosmosdbsqldatabaseName string = 'sqldb-mediaservices-01'
 param sqlcontainerJobsName string = 'EncoderJobs'
 param sqlcontainerPresetsName string = 'EncoderPresets'
-
+param cdnProfileName string = 'cdn-mediaservices'
 
 
 
@@ -49,6 +49,7 @@ module queue 'modules/queue.bicep' = {
   }
 }
 
+// create file share
 module fileShare 'modules/fileshare.bicep' = {
   name: 'fileShare'
   params: {
@@ -65,7 +66,6 @@ module scriptFileShare 'modules/fileshare.bicep' = {
     fileShareName: 'script-share'
   }
 }
-
 
 // create blob storage
 module blobContainer 'modules/blobcontainer.bicep' = {
@@ -151,6 +151,7 @@ module cosmosdbsqldatabase 'modules/cosmosdbsqldatabase.bicep' = {
   ]
 }
 
+// create cosmos DB SQL container for EncoderJobs
 module sqlcontainerJobs 'modules/sqlcontainer.bicep' = {
   name: 'sqlcontainerJobs'
   params: {
@@ -163,6 +164,7 @@ module sqlcontainerJobs 'modules/sqlcontainer.bicep' = {
   ]
 }
 
+// create cosmos DB SQL container for EncoderPresets
 module sqlcontainerPresets 'modules/sqlcontainer.bicep' = {
   name: 'sqlcontainerPresets'
   params: {
@@ -175,38 +177,15 @@ module sqlcontainerPresets 'modules/sqlcontainer.bicep' = {
   ]
 }
 
-
-
-resource profiles_cdn_profile_tom_encoder_name_resource 'Microsoft.Cdn/profiles@2022-11-01-preview' = {
-  name: profiles_cdn_profile_tom_encoder_name
-  location: 'Global'
-  sku: {
-    name: 'Standard_Microsoft'
-  }
-  kind: 'cdn'
-  properties: {
-    extendedProperties: {}
+module cdn 'modules/cdn.bicep' = {
+  name: 'cdn'
+  params: {
+    cdnProfileName: cdnProfileName
   }
 }
 
-resource workspaces_log_mcencoder_name_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
-  name: workspaces_log_mcencoder_name
-  location: location
-  properties: {
-    sku: {
-      name: 'pergb2018'
-    }
-    retentionInDays: 30
-    features: {
-      enableLogAccessUsingOnlyResourcePermissions: true
-    }
-    workspaceCapping: {
-      dailyQuotaGb: -1
-    }
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
-  }
-}
+
+
 
 resource serverfarms_GermanyWestCentralLinuxDynamicPlan_name_resource 'Microsoft.Web/serverfarms@2023-01-01' = {
   name: serverfarms_GermanyWestCentralLinuxDynamicPlan_name
@@ -410,6 +389,27 @@ resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_
   ]
 }
 
+
+
+
+resource workspaces_log_mcencoder_name_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
+  name: workspaces_log_mcencoder_name
+  location: location
+  properties: {
+    sku: {
+      name: 'pergb2018'
+    }
+    retentionInDays: 30
+    features: {
+      enableLogAccessUsingOnlyResourcePermissions: true
+    }
+    workspaceCapping: {
+      dailyQuotaGb: -1
+    }
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+  }
+}
 
 
 
