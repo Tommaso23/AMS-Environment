@@ -125,58 +125,11 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
 }
 
 // create cosmos DB
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
-  name: cosmosDBAccountName
-  location: location
-  kind: 'GlobalDocumentDB'
-  identity: {
-    type: 'None'
-  }
-  properties: {
-    publicNetworkAccess: 'Enabled'
-    enableAutomaticFailover: false
-    enableMultipleWriteLocations: false
-    isVirtualNetworkFilterEnabled: false
-    virtualNetworkRules: []
-    disableKeyBasedMetadataWriteAccess: false
-    enableFreeTier: false
-    enableAnalyticalStorage: false
-    analyticalStorageConfiguration: {
-      schemaType: 'WellDefined'
-    }
-    databaseAccountOfferType: 'Standard'
-    defaultIdentity: 'FirstPartyIdentity'
-    networkAclBypass: 'None'
-    disableLocalAuth: false
-    enablePartitionMerge: false
-    enableBurstCapacity: false
-    minimalTlsVersion: 'Tls12'
-    consistencyPolicy: {
-      defaultConsistencyLevel: 'Session'
-      maxIntervalInSeconds: 5
-      maxStalenessPrefix: 100
-    }
-    locations: [
-      {
-        locationName: location
-        provisioningState: 'Succeeded'
-        failoverPriority: 0
-        isZoneRedundant: false
-      }
-    ]
-    cors: []
-    capabilities: []
-    ipRules: []
-    backupPolicy: {
-      type: 'Periodic'
-      periodicModeProperties: {
-        backupIntervalInMinutes: 240
-        backupRetentionIntervalInHours: 8
-        backupStorageRedundancy: 'Geo'
-      }
-    }
-    networkAclBypassResourceIds: []
-    keysMetadata: {}
+module cosmosdbaccount 'modules/cosmosdbaccount.bicep' = {
+  name: 'cosmosdbaccount'
+  params: {
+    location: location
+    cosmosDBAccountName: cosmosDBAccountName
   }
 }
 
