@@ -4,6 +4,12 @@ param functionAppStorageAccountName string = 'st-functionapp'
 param sites_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
 param blobContainerName string = 'assets-storage-container'
 param queueName string = 'functionapp-queue'
+param cosmosdbaccountName string = 'cosmos-mediaservices-01'
+param cosmosdbsqldatabaseName string = 'sqldb-mediaservices-01'
+param sqlcontainerJobsName string = 'EncoderJobs'
+param sqlcontainerPresetsName string = 'EncoderPresets'
+
+
 
 
 param vaults_vault138_name string = 'vault138'
@@ -12,7 +18,6 @@ param components_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
 param workspaces_log_mcencoder_name string = 'log-mcencoder'
 param containerGroups_ffmpegcontainer_name string = 'ffmpegcontainer'
 param serverfarms_GermanyWestCentralLinuxDynamicPlan_name string = 'GermanyWestCentralLinuxDynamicPlan'
-param cosmosDBAccountName string = 'tom-encoder-cosmos-account'
 param actionGroups_Application_Insights_Smart_Detection_name string = 'Application Insights Smart Detection'
 param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string = 'failure anomalies - tom-encoder-fa-api'
 param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
@@ -131,17 +136,19 @@ module cosmosdbaccount 'modules/cosmosdbaccount.bicep' = {
     location: location
     cosmosDBAccountName: cosmosDBAccountName
   }
+
 }
 
 // create cosmos DB SQL database
-resource cosmosDBSQLDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
-  parent: cosmosDBAccount
-  name: 'tom-encoder-db'
-  properties: {
-    resource: {
-      id: 'tom-encoder-db'
-    }
+module cosmosdbsqldatabase 'modules/cosmosdbsqldatabase.bicep' = {
+  name: 'cosmosDBSQLDatabase'
+  params: {
+    cosmosdbaccountName: cosmosdbaccountName
+    cosmosdbsqlDatabaseName: cosmosdbsqldatabaseName
   }
+  dependsOn: [
+    cosmosdbaccount
+  ]
 }
 
 // create cosmos DB SQL container "EncoderJobs"
