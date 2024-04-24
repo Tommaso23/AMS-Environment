@@ -151,87 +151,27 @@ module cosmosdbsqldatabase 'modules/cosmosdbsqldatabase.bicep' = {
   ]
 }
 
-// create cosmos DB SQL container "EncoderJobs"
-resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db_EncoderJobs 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
-  parent: cosmosDBSQLDatabase
-  name: 'EncoderJobs'
-  properties: {
-    resource: {
-      id: 'EncoderJobs'
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      uniqueKeyPolicy: {
-        uniqueKeys: []
-      }
-      conflictResolutionPolicy: {
-        mode: 'LastWriterWins'
-        conflictResolutionPath: '/_ts'
-      }
-      computedProperties: []
-    }
+module sqlcontainerJobs 'modules/sqlcontainer.bicep' = {
+  name: 'sqlcontainerJobs'
+  params: {
+    cosmosdbAccountName: cosmosdbaccountName
+    sqldbName: cosmosdbsqldatabaseName
+    sqlcontainerName: sqlcontainerJobsName
   }
   dependsOn: [
-    cosmosDBAccount
+    cosmosdbsqldatabase
   ]
 }
 
-// create cosmos DB SQL container "EncoderPresets"
-resource databaseAccounts_tom_encoder_cosmos_account_name_tom_encoder_db_EncoderPresets 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
-  parent: cosmosDBSQLDatabase
-  name: 'EncoderPresets'
-  properties: {
-    resource: {
-      id: 'EncoderPresets'
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      uniqueKeyPolicy: {
-        uniqueKeys: []
-      }
-      conflictResolutionPolicy: {
-        mode: 'LastWriterWins'
-        conflictResolutionPath: '/_ts'
-      }
-      computedProperties: []
-    }
+module sqlcontainerPresets 'modules/sqlcontainer.bicep' = {
+  name: 'sqlcontainerPresets'
+  params: {
+    cosmosdbAccountName: cosmosdbaccountName
+    sqldbName: cosmosdbsqldatabaseName
+    sqlcontainerName: sqlcontainerPresetsName
   }
   dependsOn: [
-    cosmosDBAccount
+    cosmosdbsqldatabase
   ]
 }
 
