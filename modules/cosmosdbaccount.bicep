@@ -50,7 +50,5 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
         backupStorageRedundancy: 'Geo'
       }
     }
-    networkAclBypassResourceIds: []
-    keysMetadata: {}
   }
 }

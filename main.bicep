@@ -10,7 +10,7 @@ param sqlcontainerJobsName string = 'EncoderJobs'
 param sqlcontainerPresetsName string = 'EncoderPresets'
 param cdnProfileName string = 'cdn-mediaservices'
 param privateEndpointName string = 'pe-cdn-mediaservices'
-param originHostName string = '${storageAccountName}.blob.core.windows.net'
+
 
 param vaults_vault138_name string = 'vault138'
 param profiles_cdn_profile_tom_encoder_name string = 'cdn-profile-tom-encoder'
@@ -261,7 +261,7 @@ module privateEndpoint 'modules/privateendpoint.bicep' = {
   params: {
     cdnProfileName: cdnProfileName
     privateEndpointName: privateEndpointName
-    originHostName: originHostName
+    originHostName: storageAccount.outputs.blobEndpoint
   }
 }
 
