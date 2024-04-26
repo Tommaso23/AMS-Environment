@@ -9,8 +9,8 @@ param cosmosdbsqldatabaseName string = 'sqldb-mediaservices-01'
 param sqlcontainerJobsName string = 'EncoderJobs'
 param sqlcontainerPresetsName string = 'EncoderPresets'
 param cdnProfileName string = 'cdn-mediaservices'
-
-
+param privateEndpointName string = 'pe-cdn-mediaservices'
+param originHostName string = '${storageAccountName}.blob.core.windows.net'
 
 param vaults_vault138_name string = 'vault138'
 param profiles_cdn_profile_tom_encoder_name string = 'cdn-profile-tom-encoder'
@@ -185,35 +185,8 @@ module cdn 'modules/cdn.bicep' = {
 }
 
 
-
-
-resource serverfarms_GermanyWestCentralLinuxDynamicPlan_name_resource 'Microsoft.Web/serverfarms@2023-01-01' = {
-  name: serverfarms_GermanyWestCentralLinuxDynamicPlan_name
-  location: location
-  sku: {
-    name: 'Y1'
-    tier: 'Dynamic'
-    size: 'Y1'
-    family: 'Y'
-    capacity: 0
-  }
-  kind: 'functionapp'
-  properties: {
-    perSiteScaling: false
-    elasticScaleEnabled: false
-    maximumElasticWorkerCount: 1
-    isSpot: false
-    reserved: true
-    isXenon: false
-    hyperV: false
-    targetWorkerCount: 0
-    targetWorkerSizeId: 0
-    zoneRedundant: false
-  }
-}
-
 resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder 'Microsoft.Cdn/profiles/endpoints@2022-11-01-preview' = {
-  parent: profiles_cdn_profile_tom_encoder_name_resource
+  parent: profiles_cdn_profile_tom_encoder_name
   name: 'cdn-endpoint-tom-encoder'
   location: 'Global'
   properties: {
@@ -283,7 +256,31 @@ resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder 'Microso
     geoFilters: []
   }
 }
+module privateEndpoint 'modules/privateendpoint.bicep' = {
+  name: 'privateEndpoint'
+  params: {
+    cdnProfileName: cdnProfileName
+    privateEndpointName: privateEndpointName
+    originHostName: originHostName
+  }
+}
 
+resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_origin_fa96716a 'Microsoft.Cdn/profiles/endpoints/origins@2022-11-01-preview' = {
+  parent: profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder
+  name: 'default-origin-fa96716a'
+  properties: {
+    hostName: 'tomencoderassetssa.blob.core.windows.net' //parametrizzare con nome storage account blob
+    httpPort: 80
+    httpsPort: 443
+    originHostHeader: 'tomencoderassetssa.blob.core.windows.net'
+    priority: 1
+    weight: 1000
+    enabled: true
+  }
+  dependsOn: [
+    profiles_cdn_profile_tom_encoder_name_resource
+  ]
+}
 
 
 
@@ -372,25 +369,31 @@ resource sites_tom_encoder_fa_api_name_web 'Microsoft.Web/sites/config@2023-01-0
   }
 }
 
-resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_origin_fa96716a 'Microsoft.Cdn/profiles/endpoints/origins@2022-11-01-preview' = {
-  parent: profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder
-  name: 'default-origin-fa96716a'
-  properties: {
-    hostName: 'tomencoderassetssa.blob.core.windows.net' //parametrizzare con nome storage account blob
-    httpPort: 80
-    httpsPort: 443
-    originHostHeader: 'tomencoderassetssa.blob.core.windows.net'
-    priority: 1
-    weight: 1000
-    enabled: true
+
+resource serverfarms_GermanyWestCentralLinuxDynamicPlan_name_resource 'Microsoft.Web/serverfarms@2023-01-01' = {
+  name: serverfarms_GermanyWestCentralLinuxDynamicPlan_name
+  location: location
+  sku: {
+    name: 'Y1'
+    tier: 'Dynamic'
+    size: 'Y1'
+    family: 'Y'
+    capacity: 0
   }
-  dependsOn: [
-    profiles_cdn_profile_tom_encoder_name_resource
-  ]
+  kind: 'functionapp'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
+    reserved: true
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
 }
-
-
-
 
 resource workspaces_log_mcencoder_name_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
   name: workspaces_log_mcencoder_name
