@@ -10,10 +10,12 @@ param sqlcontainerJobsName string = 'EncoderJobs'
 param sqlcontainerPresetsName string = 'EncoderPresets'
 param cdnProfileName string = 'cdn-mediaservices'
 param privateEndpointName string = 'pe-cdn-mediaservices'
+param functionappName string = 'fa-mediaservices'
+param functionappAppServicePlanName string = 'asp-mediaservices'
 
 
+/*
 param vaults_vault138_name string = 'vault138'
-param profiles_cdn_profile_tom_encoder_name string = 'cdn-profile-tom-encoder'
 param components_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
 param workspaces_log_mcencoder_name string = 'log-mcencoder'
 param containerGroups_ffmpegcontainer_name string = 'ffmpegcontainer'
@@ -21,6 +23,7 @@ param serverfarms_GermanyWestCentralLinuxDynamicPlan_name string = 'GermanyWestC
 param actionGroups_Application_Insights_Smart_Detection_name string = 'Application Insights Smart Detection'
 param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string = 'failure anomalies - tom-encoder-fa-api'
 param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
+*/
 
 // create storage account for media assets
 module storageAccount 'modules/storageaccount.bicep' = {
@@ -77,55 +80,20 @@ module blobContainer 'modules/blobcontainer.bicep' = {
 }
 
 // create function app
-resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
-  name: sites_tom_encoder_fa_api_name
-  location: location
-  kind: 'functionapp,linux'
-  identity: {
-    type: 'SystemAssigned'
+module functionApp 'modules/functionapp.bicep' = {
+  name: 'functionApp'
+  params: {
+    location: location
+    functionAppName: functionappName
+    serverFarmId: functionappAppServicePlanName
   }
-  properties: {
-    enabled: true
-    hostNameSslStates: [
-      {
-        name: '${sites_tom_encoder_fa_api_name}.azurewebsites.net'
-        sslState: 'Disabled'
-        hostType: 'Standard'
-      }
-      {
-        name: '${sites_tom_encoder_fa_api_name}.scm.azurewebsites.net'
-        sslState: 'Disabled'
-        hostType: 'Repository'
-      }
-    ]
-    serverFarmId: resourceGroup().id
-    reserved: true
-    isXenon: false
-    hyperV: false
-    vnetRouteAllEnabled: false
-    vnetImagePullEnabled: false
-    vnetContentShareEnabled: false
-    siteConfig: {
-      numberOfWorkers: 1
-      linuxFxVersion: 'DOTNET-ISOLATED|8.0'
-      acrUseManagedIdentityCreds: false
-      alwaysOn: false
-      http20Enabled: true
-      functionAppScaleLimit: 200
-      minimumElasticInstanceCount: 0
-    }
-    scmSiteAlsoStopped: false
-    clientAffinityEnabled: false
-    clientCertEnabled: false
-    clientCertMode: 'Required'
-    hostNamesDisabled: false
-    customDomainVerificationId: '517B90CD51655432EB5DD9D88E4493ABCFD99BDA4241179C0DA8BC449D4EC896'
-    containerSize: 0
-    dailyMemoryTimeQuota: 0
-    httpsOnly: false
-    redundancyMode: 'None'
-    storageAccountRequired: false
-    keyVaultReferenceIdentity: 'SystemAssigned'
+}
+
+module appServicePlan 'modules/appserviceplan.bicep' = {
+  name: 'appServicePlan'
+  params: {
+    location: location
+    functionappAppServicePlanName: functionappAppServicePlanName
   }
 }
 
@@ -134,7 +102,7 @@ module cosmosdbaccount 'modules/cosmosdbaccount.bicep' = {
   name: 'cosmosdbaccount'
   params: {
     location: location
-    cosmosDBAccountName: cosmosDBAccountName
+    cosmosDBAccountName: cosmosdbaccountName
   }
 
 }
@@ -184,78 +152,6 @@ module cdn 'modules/cdn.bicep' = {
   }
 }
 
-
-resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder 'Microsoft.Cdn/profiles/endpoints@2022-11-01-preview' = {
-  parent: profiles_cdn_profile_tom_encoder_name
-  name: 'cdn-endpoint-tom-encoder'
-  location: 'Global'
-  properties: {
-    originHostHeader: 'tomencoderassetssa.blob.core.windows.net'
-    contentTypesToCompress: [
-      'application/eot'
-      'application/font'
-      'application/font-sfnt'
-      'application/javascript'
-      'application/json'
-      'application/opentype'
-      'application/otf'
-      'application/pkcs7-mime'
-      'application/truetype'
-      'application/ttf'
-      'application/vnd.ms-fontobject'
-      'application/xhtml+xml'
-      'application/xml'
-      'application/xml+rss'
-      'application/x-font-opentype'
-      'application/x-font-truetype'
-      'application/x-font-ttf'
-      'application/x-httpd-cgi'
-      'application/x-javascript'
-      'application/x-mpegurl'
-      'application/x-opentype'
-      'application/x-otf'
-      'application/x-perl'
-      'application/x-ttf'
-      'font/eot'
-      'font/ttf'
-      'font/otf'
-      'font/opentype'
-      'image/svg+xml'
-      'text/css'
-      'text/csv'
-      'text/html'
-      'text/javascript'
-      'text/js'
-      'text/plain'
-      'text/richtext'
-      'text/tab-separated-values'
-      'text/xml'
-      'text/x-script'
-      'text/x-component'
-      'text/x-java-source'
-    ]
-    isCompressionEnabled: true
-    isHttpAllowed: true
-    isHttpsAllowed: true
-    queryStringCachingBehavior: 'IgnoreQueryString'
-    origins: [
-      {
-        name: 'default-origin-fa96716a'
-        properties: {
-          hostName: 'tomencoderassetssa.blob.core.windows.net'
-          httpPort: 80
-          httpsPort: 443
-          originHostHeader: 'tomencoderassetssa.blob.core.windows.net'
-          priority: 1
-          weight: 1000
-          enabled: true
-        }
-      }
-    ]
-    originGroups: []
-    geoFilters: []
-  }
-}
 module privateEndpoint 'modules/privateendpoint.bicep' = {
   name: 'privateEndpoint'
   params: {
@@ -265,7 +161,8 @@ module privateEndpoint 'modules/privateendpoint.bicep' = {
   }
 }
 
-resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_origin_fa96716a 'Microsoft.Cdn/profiles/endpoints/origins@2022-11-01-preview' = {
+
+/*resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_origin_fa96716a 'Microsoft.Cdn/profiles/endpoints/origins@2022-11-01-preview' = {
   parent: profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder
   name: 'default-origin-fa96716a'
   properties: {
@@ -280,8 +177,7 @@ resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_
   dependsOn: [
     profiles_cdn_profile_tom_encoder_name_resource
   ]
-}
-
+}*/
 
 
 
@@ -370,30 +266,6 @@ resource sites_tom_encoder_fa_api_name_web 'Microsoft.Web/sites/config@2023-01-0
 }
 
 
-resource serverfarms_GermanyWestCentralLinuxDynamicPlan_name_resource 'Microsoft.Web/serverfarms@2023-01-01' = {
-  name: serverfarms_GermanyWestCentralLinuxDynamicPlan_name
-  location: location
-  sku: {
-    name: 'Y1'
-    tier: 'Dynamic'
-    size: 'Y1'
-    family: 'Y'
-    capacity: 0
-  }
-  kind: 'functionapp'
-  properties: {
-    perSiteScaling: false
-    elasticScaleEnabled: false
-    maximumElasticWorkerCount: 1
-    isSpot: false
-    reserved: true
-    isXenon: false
-    hyperV: false
-    targetWorkerCount: 0
-    targetWorkerSizeId: 0
-    zoneRedundant: false
-  }
-}
 
 resource workspaces_log_mcencoder_name_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
   name: workspaces_log_mcencoder_name

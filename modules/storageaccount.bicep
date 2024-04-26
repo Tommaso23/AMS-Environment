@@ -1,7 +1,6 @@
 param storageAccountName string
 param location string 
 
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
   name: storageAccountName
   location: location
@@ -10,7 +9,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
   }
   sku: {
     name: 'Standard_LRS'
-    tier: 'Standard'
+    //tier: 'Standard'
   }
   kind: 'StorageV2'
   properties: {
