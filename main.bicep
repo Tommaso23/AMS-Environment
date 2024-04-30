@@ -24,16 +24,21 @@ param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string =
 param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
 */
 
-
 var appSettings = [
+  {
+    name: 'FUNCTIONS_EXTENSION_VERSION'
+    value: '~4'
+  }
   {
     name: 'AzureWebJobsStorage'
     value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
   }
+  /*
   {
     name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-    value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
+    value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.outputs.storageaccountKey}'
   }
+  */
   {
     name: 'COSMOS_DB_AUTH_KEY'
     value: cosmosdbaccount.outputs.cosmosdbauthentificationKey
@@ -54,13 +59,14 @@ var appSettings = [
     name: 'COSMOS_DB_ENDPOINT'
     value: cosmosdbaccount.outputs.cosmosdbendpoint
   }
+  
   {
     name: 'ENCODER_ASSETS_STORAGE_CONTAINER_NAME'
     value: blobContainerName
   }
   {
     name: 'ENCODER_ASSETS_STORAGE_FILESHARE_NAME'
-    value: fileShareName 
+    value: fileShareName
   }
   {
     name: 'FA_STORAGE_ACCOUNT_NAME'
@@ -69,10 +75,6 @@ var appSettings = [
   {
     name: 'FA_STORAGE_ENCODERJOBS_QUEUE_NAME'
     value: queueName
-  }
-  {
-    name: 'FUNCTIONS_EXTENSION_VERSION'
-    value: '~4'
   }
   {
     name: 'RESOURCE_GROUP_NAME'
@@ -90,25 +92,29 @@ var appSettings = [
     name: 'TENANT_ID'
     value: tenant().tenantId
   }
+  /*
+  {
+    name: 'WEBSITE_CONTENTSHARE'
+    value: ''
+  }
+  
   {
     //name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
     //value: 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=${functionAppStorageAccountName};AccountKey=J2CcGG08jt8FGWRZwG15pIkQHmYbSj51ceg6MvJ12QpFKCSiNF1taOZres9CWPKnb64DNMTIM8cE+AStpVM6cQ=='
   }
   {
-    //name: 'WEBSITE_CONTENTSHARE'
-    //value: ''
-  }
-  {
-    name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
-    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageAccountKey};EndpointSuffix=core.windows.net'
-  }
-  {
     name: 'WEBSITE_MOUNT_ENABLED'
     value: '1'
   }
+  
   {
-    name: 'WEBSITE_RUN_FROM_PACKAGE'
-    value: 'https://tomencfasa.blob.core.windows.net/function-releases/20240327102907-08f88fcf7b2b91dcbc05dac9046e2eb1.zip?sv=2022-11-02&st=2024-03-27T10%3A24%3A35Z&se=2034-03-27T10%3A29%3A35Z&sr=b&sp=r&sig=9yCWOIf9pR7dS1IZGtlMqKppsNh6h7CkU9m8G5GYYfc%3D'
+    name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageaccountKey};EndpointSuffix=core.windows.net'
+  }
+  */
+  /*{
+    //name: 'WEBSITE_RUN_FROM_PACKAGE'
+    //value: 'https://tomencfasa.blob.core.windows.net/function-releases/20240327102907-08f88fcf7b2b91dcbc05dac9046e2eb1.zip?sv=2022-11-02&st=2024-03-27T10%3A24%3A35Z&se=2034-03-27T10%3A29%3A35Z&sr=b&sp=r&sig=9yCWOIf9pR7dS1IZGtlMqKppsNh6h7CkU9m8G5GYYfc%3D'
   }
   {
     //name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -123,7 +129,7 @@ var appSettings = [
     //value: functionRuntime
   }
   
-
+*/
 ]
 // create storage account for media assets
 module storageAccount 'modules/storageaccount.bicep' = {
