@@ -1,6 +1,7 @@
 param functionAppName string
 param location string
 param serverFarmId string
+param appSettings array
 
 resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
   name: functionAppName
@@ -31,6 +32,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
     vnetImagePullEnabled: false
     vnetContentShareEnabled: false
     siteConfig: {
+      appSettings: appSettings
       numberOfWorkers: 1
       linuxFxVersion: 'DOTNET-ISOLATED|8.0'
       acrUseManagedIdentityCreds: false

@@ -44,4 +44,5 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
 
 output blobEndpoint string = replace(replace(storageAccount.properties.primaryEndpoints.blob, 'https://', ''), '/', '')
 
+output storageAccountKey string = storageAccount.listKeys().keys[0].value
 
