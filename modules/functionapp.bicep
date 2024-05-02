@@ -55,3 +55,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
     keyVaultReferenceIdentity: 'SystemAssigned'
   }
 }
+
+output principalId string = functionApp.identity.principalId
+
+

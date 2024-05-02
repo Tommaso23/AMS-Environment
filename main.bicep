@@ -271,6 +271,27 @@ module privateEndpoint 'modules/privateendpoint.bicep' = {
   }
 }
 
+module sqlRoleDefinition 'modules/sqlRoleDefinition.bicep' = {
+  name: 'sqlRoleDefinition'
+  params: {
+    cosmosdbAccountName: cosmosdbaccountName
+    cosmosdbAccountId: cosmosdbaccount.outputs.cosmosdbaccountId
+  }
+}
+
+module sqlroleAssignment 'modules/sqlroleAssignment.bicep' = {
+  name: 'sqlroleAssignment'
+  params: {
+    cosmosDBAccountName: cosmosdbaccountName
+    cosmosDBAccountId: cosmosdbaccount.outputs.cosmosdbaccountId
+    principalId: functionApp.outputs.principalId
+    roleDefinitionId: sqlRoleDefinition.outputs.roleDefinitionId
+  }
+  dependsOn: [
+    sqlRoleDefinition
+  ]
+}
+
 
 /*resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_origin_fa96716a 'Microsoft.Cdn/profiles/endpoints/origins@2022-11-01-preview' = {
   parent: profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder
