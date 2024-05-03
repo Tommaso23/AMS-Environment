@@ -13,11 +13,11 @@ param cdnProfileName string = 'cdn-mediaservices'
 param privateEndpointName string = 'pe-cdn-mediaservices'
 param functionappName string = 'fa-mediaservices'
 param functionappAppServicePlanName string = 'asp-mediaservices'
+param logAnalyticsWorkspaceName string = 'logAnalytics-mediaservices'
+param applicationInsightsName string = 'applicationInsights-mediaservices'
 //'C:\Users\t-tbucaioni\Desktop\tom-encoder.zip'
 /*
 param vaults_vault138_name string = 'vault138'
-param components_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
-param workspaces_log_mcencoder_name string = 'log-mcencoder'
 param serverfarms_GermanyWestCentralLinuxDynamicPlan_name string = 'GermanyWestCentralLinuxDynamicPlan'
 param actionGroups_Application_Insights_Smart_Detection_name string = 'Application Insights Smart Detection'
 param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string = 'failure anomalies - tom-encoder-fa-api'
@@ -102,6 +102,14 @@ var appSettings = [
   {
     name: 'WEBSITE_MOUNT_ENABLED'
     value: '1'
+  }
+  {
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+    value: 'InstrumentationKey=${applicationInsights.outputs.instrumentationKey}'
+  }
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    value: applicationInsights.outputs.instrumentationKey
   }
   
   
@@ -282,6 +290,22 @@ module sqlroleAssignment 'modules/sqlroleAssignment.bicep' = {
   ]
 }
 
+module logAnalytics 'modules/logAnalytics.bicep' = {
+  name: 'logAnalytics'
+  params: {
+    location: location
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+  }
+}
+
+module applicationInsights 'modules/applicationInsights.bicep' = {
+  name: 'applicationInsights'
+  params: {
+    location: location
+    applicationInsightsName: applicationInsightsName
+    workspaceId: logAnalytics.outputs.logAnlayticsWorkspaceId
+  }
+}
 
 /*resource profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder_default_origin_fa96716a 'Microsoft.Cdn/profiles/endpoints/origins@2022-11-01-preview' = {
   parent: profiles_cdn_profile_tom_encoder_name_cdn_endpoint_tom_encoder
