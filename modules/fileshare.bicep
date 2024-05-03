@@ -10,3 +10,4 @@ resource storageAccountAssetFileShare 'Microsoft.Storage/storageAccounts/fileSer
     enabledProtocols: 'SMB'
   }
 }
+
