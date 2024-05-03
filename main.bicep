@@ -13,7 +13,7 @@ param cdnProfileName string = 'cdn-mediaservices'
 param privateEndpointName string = 'pe-cdn-mediaservices'
 param functionappName string = 'fa-mediaservices'
 param functionappAppServicePlanName string = 'asp-mediaservices'
-
+//'C:\Users\t-tbucaioni\Desktop\tom-encoder.zip'
 /*
 param vaults_vault138_name string = 'vault138'
 param components_tom_encoder_fa_api_name string = 'tom-encoder-fa-api'
@@ -25,20 +25,11 @@ param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_exte
 */
 
 var appSettings = [
-  {
-    name: 'FUNCTIONS_EXTENSION_VERSION'
-    value: '~4'
-  }
+
   {
     name: 'AzureWebJobsStorage'
     value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
   }
-  /*
-  {
-    name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-    value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.outputs.storageaccountKey}'
-  }
-  */
   {
     name: 'COSMOS_DB_AUTH_KEY'
     value: cosmosdbaccount.outputs.cosmosdbauthentificationKey
@@ -59,6 +50,10 @@ var appSettings = [
     name: 'COSMOS_DB_ENDPOINT'
     value: cosmosdbaccount.outputs.cosmosdbendpoint
   }
+  {
+    name: 'FUNCTIONS_EXTENSION_VERSION'
+    value: '~4'
+  }
   
   {
     name: 'ENCODER_ASSETS_STORAGE_CONTAINER_NAME'
@@ -77,6 +72,10 @@ var appSettings = [
     value: queueName
   }
   {
+    name: 'FUNCTIONS_WORKER_RUNTIME'
+    value: 'dotnet-isolated'
+  }
+  {
     name: 'RESOURCE_GROUP_NAME'
     value: resourceGroup().name
   }
@@ -92,26 +91,20 @@ var appSettings = [
     name: 'TENANT_ID'
     value: tenant().tenantId
   }
-  /*
   {
-    name: 'WEBSITE_CONTENTSHARE'
-    value: ''
+    name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+    value: 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=${functionAppStorageAccountName};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
   }
-  
   {
-    //name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-    //value: 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=${functionAppStorageAccountName};AccountKey=J2CcGG08jt8FGWRZwG15pIkQHmYbSj51ceg6MvJ12QpFKCSiNF1taOZres9CWPKnb64DNMTIM8cE+AStpVM6cQ=='
+    name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageAccountKey};EndpointSuffix=core.windows.net'
   }
   {
     name: 'WEBSITE_MOUNT_ENABLED'
     value: '1'
   }
   
-  {
-    name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
-    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageaccountKey};EndpointSuffix=core.windows.net'
-  }
-  */
+  
   /*{
     //name: 'WEBSITE_RUN_FROM_PACKAGE'
     //value: 'https://tomencfasa.blob.core.windows.net/function-releases/20240327102907-08f88fcf7b2b91dcbc05dac9046e2eb1.zip?sv=2022-11-02&st=2024-03-27T10%3A24%3A35Z&se=2034-03-27T10%3A29%3A35Z&sr=b&sp=r&sig=9yCWOIf9pR7dS1IZGtlMqKppsNh6h7CkU9m8G5GYYfc%3D'
@@ -124,10 +117,7 @@ var appSettings = [
     //name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
     //value: 'InstrumentationKey=${appInsights.properties.InstrumentationKey}'
   }
-  {
-    //name: 'FUNCTIONS_WORKER_RUNTIME'
-    //value: functionRuntime
-  }
+  
   
 */
 ]
