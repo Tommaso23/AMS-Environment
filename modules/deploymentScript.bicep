@@ -2,9 +2,10 @@ param location string
 param storageAccountName string
 param blobContainerName string
 var userAssignedIdentityName = 'configDeployer'
-var roleAssignmemtName = guid(resourceGroup().id, 'contributor')
+var roleAssignmentName = guid(resourceGroup().id, 'contributor')
 
 var contributorRoleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+
 
 
 resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2021-09-30-preview' = {
@@ -12,13 +13,15 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   location: location
 }
 
-resource roleAssignmet 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: roleAssignmemtName
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: roleAssignmentName
   properties: {
     roleDefinitionId: contributorRoleDefinitionId
     principalId: userAssignedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-    scope: resourceGroup().id
+    //principalId: reference(userAssignedIdentity.id, '2018-11-30').principalId
+    //scope: resourceGroup().id
+    //principalType: 'ServicePrincipal'
+    
   }
 }
 
