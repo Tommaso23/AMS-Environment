@@ -1,0 +1,1364 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "4661353468352313882"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "germanywestcentral"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "st-encoderasset"
+    },
+    "functionAppStorageAccountName": {
+      "type": "string",
+      "defaultValue": "st-functionapp"
+    },
+    "fileShareName": {
+      "type": "string",
+      "defaultValue": "assets-hare"
+    },
+    "scriptShareName": {
+      "type": "string",
+      "defaultValue": "script-share"
+    },
+    "blobContainerName": {
+      "type": "string",
+      "defaultValue": "assets-storage-container"
+    },
+    "queueName": {
+      "type": "string",
+      "defaultValue": "functionapp-queue"
+    },
+    "cosmosdbaccountName": {
+      "type": "string",
+      "defaultValue": "cosmos-mediaservices-01"
+    },
+    "cosmosdbsqldatabaseName": {
+      "type": "string",
+      "defaultValue": "sqldb-mediaservices-01"
+    },
+    "sqlcontainerJobsName": {
+      "type": "string",
+      "defaultValue": "EncoderJobs"
+    },
+    "sqlcontainerPresetsName": {
+      "type": "string",
+      "defaultValue": "EncoderPresets"
+    },
+    "cdnProfileName": {
+      "type": "string",
+      "defaultValue": "cdn-mediaservices"
+    },
+    "privateEndpointName": {
+      "type": "string",
+      "defaultValue": "pe-cdn-mediaservices"
+    },
+    "functionappName": {
+      "type": "string",
+      "defaultValue": "fa-mediaservices"
+    },
+    "functionappAppServicePlanName": {
+      "type": "string",
+      "defaultValue": "asp-mediaservices"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "storageAccount",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "11880158408845565421"
+            }
+          },
+          "parameters": {
+            "storageAccountName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2022-05-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "[parameters('location')]",
+              "tags": {
+                "owner": "tagValue"
+              },
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "kind": "StorageV2",
+              "properties": {
+                "defaultToOAuthAuthentication": false,
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                  "bypass": "AzureServices",
+                  "virtualNetworkRules": [],
+                  "ipRules": [],
+                  "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                  "services": {
+                    "file": {
+                      "keyType": "Account",
+                      "enabled": true
+                    },
+                    "blob": {
+                      "keyType": "Account",
+                      "enabled": true
+                    }
+                  },
+                  "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+              }
+            }
+          ],
+          "outputs": {
+            "blobEndpoint": {
+              "type": "string",
+              "value": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-05-01').primaryEndpoints.blob, 'https://', ''), '/', '')]"
+            },
+            "storageAccountKey": {
+              "type": "string",
+              "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-05-01').keys[0].value]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "functionAppStorageAccount",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('functionAppStorageAccountName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "11880158408845565421"
+            }
+          },
+          "parameters": {
+            "storageAccountName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2022-05-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "[parameters('location')]",
+              "tags": {
+                "owner": "tagValue"
+              },
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "kind": "StorageV2",
+              "properties": {
+                "defaultToOAuthAuthentication": false,
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                  "bypass": "AzureServices",
+                  "virtualNetworkRules": [],
+                  "ipRules": [],
+                  "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                  "services": {
+                    "file": {
+                      "keyType": "Account",
+                      "enabled": true
+                    },
+                    "blob": {
+                      "keyType": "Account",
+                      "enabled": true
+                    }
+                  },
+                  "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+              }
+            }
+          ],
+          "outputs": {
+            "blobEndpoint": {
+              "type": "string",
+              "value": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-05-01').primaryEndpoints.blob, 'https://', ''), '/', '')]"
+            },
+            "storageAccountKey": {
+              "type": "string",
+              "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-05-01').keys[0].value]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "queue",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('functionAppStorageAccountName')]"
+          },
+          "queueName": {
+            "value": "[parameters('queueName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "9610560382111553093"
+            }
+          },
+          "parameters": {
+            "queueName": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/default/{1}', parameters('storageAccountName'), parameters('queueName'))]",
+              "properties": {
+                "metadata": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "fileShare",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "fileShareName": {
+            "value": "[parameters('fileShareName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "4198240517824027765"
+            }
+          },
+          "parameters": {
+            "fileShareName": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/default/{1}', parameters('storageAccountName'), parameters('fileShareName'))]",
+              "properties": {
+                "accessTier": "TransactionOptimized",
+                "shareQuota": 102400,
+                "enabledProtocols": "SMB"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "ScriptFileShare",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "fileShareName": {
+            "value": "[parameters('scriptShareName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "4198240517824027765"
+            }
+          },
+          "parameters": {
+            "fileShareName": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/default/{1}', parameters('storageAccountName'), parameters('fileShareName'))]",
+              "properties": {
+                "accessTier": "TransactionOptimized",
+                "shareQuota": 102400,
+                "enabledProtocols": "SMB"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "blobContainer",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "blobContainerName": {
+            "value": "[parameters('blobContainerName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "15010525814976484500"
+            }
+          },
+          "parameters": {
+            "blobContainerName": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/default/{1}', parameters('storageAccountName'), parameters('blobContainerName'))]",
+              "properties": {
+                "immutableStorageWithVersioning": {
+                  "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "Container"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "functionApp",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "functionAppName": {
+            "value": "[parameters('functionappName')]"
+          },
+          "serverFarmId": {
+            "value": "[parameters('functionappAppServicePlanName')]"
+          },
+          "appSettings": {
+            "value": [
+              {
+                "name": "AzureWebJobsStorage",
+                "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', parameters('functionAppStorageAccountName'), reference(resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount'), '2022-09-01').outputs.storageAccountKey.value)]"
+              },
+              {
+                "name": "COSMOS_DB_AUTH_KEY",
+                "value": "[reference(resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount'), '2022-09-01').outputs.cosmosdbauthentificationKey.value]"
+              },
+              {
+                "name": "COSMOS_DB_DATABASE",
+                "value": "[parameters('cosmosdbaccountName')]"
+              },
+              {
+                "name": "COSMOS_DB_ENCODERJOBS_CONTAINER",
+                "value": "[parameters('sqlcontainerJobsName')]"
+              },
+              {
+                "name": "COSMOS_DB_PRESETS_CONTAINER",
+                "value": "[parameters('sqlcontainerPresetsName')]"
+              },
+              {
+                "name": "COSMOS_DB_ENDPOINT",
+                "value": "[reference(resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount'), '2022-09-01').outputs.cosmosdbendpoint.value]"
+              },
+              {
+                "name": "FUNCTIONS_EXTENSION_VERSION",
+                "value": "~4"
+              },
+              {
+                "name": "ENCODER_ASSETS_STORAGE_CONTAINER_NAME",
+                "value": "[parameters('blobContainerName')]"
+              },
+              {
+                "name": "ENCODER_ASSETS_STORAGE_FILESHARE_NAME",
+                "value": "[parameters('fileShareName')]"
+              },
+              {
+                "name": "FA_STORAGE_ACCOUNT_NAME",
+                "value": "[parameters('functionappName')]"
+              },
+              {
+                "name": "FA_STORAGE_ENCODERJOBS_QUEUE_NAME",
+                "value": "[parameters('queueName')]"
+              },
+              {
+                "name": "FUNCTIONS_WORKER_RUNTIME",
+                "value": "dotnet-isolated"
+              },
+              {
+                "name": "RESOURCE_GROUP_NAME",
+                "value": "[resourceGroup().name]"
+              },
+              {
+                "name": "STORAGE_ACCOUNT_KEY",
+                "value": "[reference(resourceId('Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').outputs.storageAccountKey.value]"
+              },
+              {
+                "name": "SUBSCRIPTION_ID",
+                "value": "[subscription().subscriptionId]"
+              },
+              {
+                "name": "TENANT_ID",
+                "value": "[tenant().tenantId]"
+              },
+              {
+                "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                "value": "[format('DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName={0};AccountKey={1}', parameters('functionAppStorageAccountName'), reference(resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount'), '2022-09-01').outputs.storageAccountKey.value)]"
+              },
+              {
+                "name": "WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING",
+                "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('storageAccountName'), reference(resourceId('Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').outputs.storageAccountKey.value)]"
+              },
+              {
+                "name": "WEBSITE_MOUNT_ENABLED",
+                "value": "1"
+              }
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "10283799215974372189"
+            }
+          },
+          "parameters": {
+            "functionAppName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "serverFarmId": {
+              "type": "string"
+            },
+            "appSettings": {
+              "type": "array"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('functionAppName')]",
+              "location": "[parameters('location')]",
+              "kind": "functionapp,linux",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                  {
+                    "name": "[format('{0}.azurewebsites.net', parameters('functionAppName'))]",
+                    "sslState": "Disabled",
+                    "hostType": "Standard"
+                  },
+                  {
+                    "name": "[format('{0}.scm.azurewebsites.net', parameters('functionAppName'))]",
+                    "sslState": "Disabled",
+                    "hostType": "Repository"
+                  }
+                ],
+                "serverFarmId": "[parameters('serverFarmId')]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                  "appSettings": "[parameters('appSettings')]",
+                  "numberOfWorkers": 1,
+                  "linuxFxVersion": "DOTNET-ISOLATED|8.0",
+                  "acrUseManagedIdentityCreds": false,
+                  "alwaysOn": false,
+                  "http20Enabled": true,
+                  "functionAppScaleLimit": 200,
+                  "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "517B90CD51655432EB5DD9D88E4493ABCFD99BDA4241179C0DA8BC449D4EC896",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false,
+                "redundancyMode": "None",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+              }
+            }
+          ],
+          "outputs": {
+            "principalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')), '2023-01-01', 'full').identity.principalId]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount')]",
+        "[resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount')]",
+        "[resourceId('Microsoft.Resources/deployments', 'storageAccount')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "appServicePlan",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "functionappAppServicePlanName": {
+            "value": "[parameters('functionappAppServicePlanName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "414214158259557269"
+            }
+          },
+          "parameters": {
+            "functionappAppServicePlanName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/serverfarms",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('functionappAppServicePlanName')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "Y1",
+                "tier": "Dynamic",
+                "size": "Y1",
+                "family": "Y",
+                "capacity": 0
+              },
+              "kind": "functionapp",
+              "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+              }
+            }
+          ],
+          "outputs": {
+            "serverFarmId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Web/serverfarms', parameters('functionappAppServicePlanName'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "cosmosdbaccount",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "cosmosDBAccountName": {
+            "value": "[parameters('cosmosdbaccountName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "12369673283098454342"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "cosmosDBAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-11-15",
+              "name": "[parameters('cosmosDBAccountName')]",
+              "location": "[parameters('location')]",
+              "kind": "GlobalDocumentDB",
+              "identity": {
+                "type": "None"
+              },
+              "properties": {
+                "publicNetworkAccess": "Enabled",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "enableFreeTier": false,
+                "enableAnalyticalStorage": false,
+                "analyticalStorageConfiguration": {
+                  "schemaType": "WellDefined"
+                },
+                "databaseAccountOfferType": "Standard",
+                "defaultIdentity": "FirstPartyIdentity",
+                "networkAclBypass": "None",
+                "disableLocalAuth": false,
+                "enablePartitionMerge": false,
+                "enableBurstCapacity": false,
+                "minimalTlsVersion": "Tls12",
+                "consistencyPolicy": {
+                  "defaultConsistencyLevel": "Session",
+                  "maxIntervalInSeconds": 5,
+                  "maxStalenessPrefix": 100
+                },
+                "locations": [
+                  {
+                    "locationName": "[parameters('location')]",
+                    "failoverPriority": 0,
+                    "isZoneRedundant": false
+                  }
+                ],
+                "cors": [],
+                "capabilities": [],
+                "ipRules": [],
+                "backupPolicy": {
+                  "type": "Periodic",
+                  "periodicModeProperties": {
+                    "backupIntervalInMinutes": 240,
+                    "backupRetentionIntervalInHours": 8,
+                    "backupStorageRedundancy": "Geo"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "cosmosdbauthentificationKey": {
+              "type": "string",
+              "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), '2023-11-15').primaryMasterKey]"
+            },
+            "cosmosdbendpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), '2023-11-15').documentEndpoint]"
+            },
+            "cosmosdbaccountId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "cosmosDBSQLDatabase",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosdbaccountName": {
+            "value": "[parameters('cosmosdbaccountName')]"
+          },
+          "cosmosdbsqlDatabaseName": {
+            "value": "[parameters('cosmosdbsqldatabaseName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "16903237831611442987"
+            }
+          },
+          "parameters": {
+            "cosmosdbaccountName": {
+              "type": "string"
+            },
+            "cosmosdbsqlDatabaseName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+              "apiVersion": "2023-11-15",
+              "name": "[format('{0}/{1}', parameters('cosmosdbaccountName'), parameters('cosmosdbsqlDatabaseName'))]",
+              "properties": {
+                "resource": {
+                  "id": "tom-encoder-db"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "sqlcontainerJobs",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosdbAccountName": {
+            "value": "[parameters('cosmosdbaccountName')]"
+          },
+          "sqldbName": {
+            "value": "[parameters('cosmosdbsqldatabaseName')]"
+          },
+          "sqlcontainerName": {
+            "value": "[parameters('sqlcontainerJobsName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "10601113740389280490"
+            }
+          },
+          "parameters": {
+            "sqlcontainerName": {
+              "type": "string"
+            },
+            "sqldbName": {
+              "type": "string"
+            },
+            "cosmosdbAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2023-11-15",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosdbAccountName'), parameters('sqldbName'), parameters('sqlcontainerName'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('sqlcontainerName')]",
+                  "indexingPolicy": {
+                    "indexingMode": "consistent",
+                    "automatic": true,
+                    "includedPaths": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "excludedPaths": [
+                      {
+                        "path": "/\"_etag\"/?"
+                      }
+                    ]
+                  },
+                  "partitionKey": {
+                    "paths": [
+                      "/id"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": []
+                  },
+                  "conflictResolutionPolicy": {
+                    "mode": "LastWriterWins",
+                    "conflictResolutionPath": "/_ts"
+                  },
+                  "computedProperties": []
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmosDBSQLDatabase')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "sqlcontainerPresets",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosdbAccountName": {
+            "value": "[parameters('cosmosdbaccountName')]"
+          },
+          "sqldbName": {
+            "value": "[parameters('cosmosdbsqldatabaseName')]"
+          },
+          "sqlcontainerName": {
+            "value": "[parameters('sqlcontainerPresetsName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "10601113740389280490"
+            }
+          },
+          "parameters": {
+            "sqlcontainerName": {
+              "type": "string"
+            },
+            "sqldbName": {
+              "type": "string"
+            },
+            "cosmosdbAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2023-11-15",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosdbAccountName'), parameters('sqldbName'), parameters('sqlcontainerName'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('sqlcontainerName')]",
+                  "indexingPolicy": {
+                    "indexingMode": "consistent",
+                    "automatic": true,
+                    "includedPaths": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "excludedPaths": [
+                      {
+                        "path": "/\"_etag\"/?"
+                      }
+                    ]
+                  },
+                  "partitionKey": {
+                    "paths": [
+                      "/id"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": []
+                  },
+                  "conflictResolutionPolicy": {
+                    "mode": "LastWriterWins",
+                    "conflictResolutionPath": "/_ts"
+                  },
+                  "computedProperties": []
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmosDBSQLDatabase')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "cdn",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cdnProfileName": {
+            "value": "[parameters('cdnProfileName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "5945882246168290743"
+            }
+          },
+          "parameters": {
+            "cdnProfileName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2022-11-01-preview",
+              "name": "[parameters('cdnProfileName')]",
+              "location": "Global",
+              "sku": {
+                "name": "Standard_Microsoft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "privateEndpoint",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cdnProfileName": {
+            "value": "[parameters('cdnProfileName')]"
+          },
+          "privateEndpointName": {
+            "value": "[parameters('privateEndpointName')]"
+          },
+          "originHostName": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').outputs.blobEndpoint.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "7693194730248340692"
+            }
+          },
+          "parameters": {
+            "privateEndpointName": {
+              "type": "string"
+            },
+            "cdnProfileName": {
+              "type": "string"
+            },
+            "originHostName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cdn/profiles/endpoints",
+              "apiVersion": "2020-09-01",
+              "name": "[format('{0}/{1}', parameters('cdnProfileName'), parameters('privateEndpointName'))]",
+              "location": "global",
+              "properties": {
+                "originHostHeader": "[parameters('originHostName')]",
+                "contentTypesToCompress": [
+                  "application/eot",
+                  "application/font",
+                  "application/font-sfnt",
+                  "application/javascript",
+                  "application/json",
+                  "application/opentype",
+                  "application/otf",
+                  "application/pkcs7-mime",
+                  "application/truetype",
+                  "application/ttf",
+                  "application/vnd.ms-fontobject",
+                  "application/xhtml+xml",
+                  "application/xml",
+                  "application/xml+rss",
+                  "application/x-font-opentype",
+                  "application/x-font-truetype",
+                  "application/x-font-ttf",
+                  "application/x-httpd-cgi",
+                  "application/x-javascript",
+                  "application/x-mpegurl",
+                  "application/x-opentype",
+                  "application/x-otf",
+                  "application/x-perl",
+                  "application/x-ttf",
+                  "font/eot",
+                  "font/ttf",
+                  "font/otf",
+                  "font/opentype",
+                  "image/svg+xml",
+                  "text/css",
+                  "text/csv",
+                  "text/html",
+                  "text/javascript",
+                  "text/js",
+                  "text/plain",
+                  "text/richtext",
+                  "text/tab-separated-values",
+                  "text/xml",
+                  "text/x-script",
+                  "text/x-component",
+                  "text/x-java-source"
+                ],
+                "isCompressionEnabled": true,
+                "isHttpAllowed": true,
+                "isHttpsAllowed": true,
+                "queryStringCachingBehavior": "IgnoreQueryString",
+                "origins": [
+                  {
+                    "name": "default-origin-fa96716a",
+                    "properties": {
+                      "hostName": "[parameters('originHostName')]"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'storageAccount')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "sqlRoleDefinition",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosdbAccountName": {
+            "value": "[parameters('cosmosdbaccountName')]"
+          },
+          "cosmosdbAccountId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount'), '2022-09-01').outputs.cosmosdbaccountId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "538622817277765690"
+            }
+          },
+          "parameters": {
+            "actions": {
+              "type": "array",
+              "defaultValue": [
+                "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+              ]
+            },
+            "roleName": {
+              "type": "string",
+              "defaultValue": "CosmosDBReadWriteRole"
+            },
+            "cosmosdbAccountId": {
+              "type": "string"
+            },
+            "cosmosdbAccountName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "roleDefName": "[guid(parameters('roleName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2021-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosdbAccountName'), variables('roleDefName'))]",
+              "properties": {
+                "roleName": "[parameters('roleName')]",
+                "type": "CustomRole",
+                "assignableScopes": [
+                  "[parameters('cosmosdbAccountId')]"
+                ],
+                "permissions": [
+                  {
+                    "dataActions": "[parameters('actions')]"
+                  }
+                ]
+              }
+            }
+          ],
+          "outputs": {
+            "roleDefinitionId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', split(format('{0}/{1}', parameters('cosmosdbAccountName'), variables('roleDefName')), '/')[0], split(format('{0}/{1}', parameters('cosmosdbAccountName'), variables('roleDefName')), '/')[1])]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "sqlroleAssignment",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosDBAccountName": {
+            "value": "[parameters('cosmosdbaccountName')]"
+          },
+          "cosmosDBAccountId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount'), '2022-09-01').outputs.cosmosdbaccountId.value]"
+          },
+          "principalId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'functionApp'), '2022-09-01').outputs.principalId.value]"
+          },
+          "roleDefinitionId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'sqlRoleDefinition'), '2022-09-01').outputs.roleDefinitionId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "3242529709293731988"
+            }
+          },
+          "parameters": {
+            "roleDefinitionId": {
+              "type": "string"
+            },
+            "principalId": {
+              "type": "string"
+            },
+            "cosmosDBAccountName": {
+              "type": "string"
+            },
+            "cosmosDBAccountId": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "roleAssignmentId": "[guid(parameters('roleDefinitionId'), parameters('principalId'), parameters('cosmosDBAccountId'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2021-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('roleAssignmentId'))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "principalId": "[parameters('principalId')]",
+                "scope": "[parameters('cosmosDBAccountId')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount')]",
+        "[resourceId('Microsoft.Resources/deployments', 'functionApp')]",
+        "[resourceId('Microsoft.Resources/deployments', 'sqlRoleDefinition')]"
+      ]
+    }
+  ]
+}
