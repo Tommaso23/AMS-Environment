@@ -112,21 +112,10 @@ var appSettings = [
     value: applicationInsights.outputs.instrumentationKey
   }
   
-  
   /*{
     //name: 'WEBSITE_RUN_FROM_PACKAGE'
     //value: 'https://tomencfasa.blob.core.windows.net/function-releases/20240327102907-08f88fcf7b2b91dcbc05dac9046e2eb1.zip?sv=2022-11-02&st=2024-03-27T10%3A24%3A35Z&se=2034-03-27T10%3A29%3A35Z&sr=b&sp=r&sig=9yCWOIf9pR7dS1IZGtlMqKppsNh6h7CkU9m8G5GYYfc%3D'
   }
-  {
-    //name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-    //value: appInsights.properties.InstrumentationKey
-  }
-  {
-    //name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-    //value: 'InstrumentationKey=${appInsights.properties.InstrumentationKey}'
-  }
-  
-  
 */
 ]
 // create storage account for media assets
@@ -153,6 +142,15 @@ module queue 'modules/queue.bicep' = {
   params: {
     storageAccountName: functionAppStorageAccountName
     queueName: queueName
+  }
+}
+
+module deploymentScript 'modules/deploymentScript.bicep' = {
+  name: 'deploymentScript'
+  params: {
+    location: location
+    storageAccountName: storageAccountName
+    blobContainerName: blobContainerName
   }
 }
 
@@ -409,29 +407,6 @@ module applicationInsights 'modules/applicationInsights.bicep' = {
     azureStorageAccounts: {}
   }
 }*/
-
-
-/*
-resource workspaces_log_mcencoder_name_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
-  name: workspaces_log_mcencoder_name
-  location: location
-  properties: {
-    sku: {
-      name: 'pergb2018'
-    }
-    retentionInDays: 30
-    features: {
-      enableLogAccessUsingOnlyResourcePermissions: true
-    }
-    workspaceCapping: {
-      dailyQuotaGb: -1
-    }
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
-  }
-}
-*/
-
 
 
 
