@@ -4,4 +4,3 @@ This repository contains Bicep files for deploying resources related to Azure Me
 ## Architecture diagram
 
 ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
-<img src="https://aka.ms/deploytuazurebutton"/>
