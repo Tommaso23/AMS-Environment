@@ -96,6 +96,10 @@ var appSettings = [
     value: 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=${functionAppStorageAccountName};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
   }
   {
+    name: 'WEBSITE_CONTENTSHARE'
+    value: toLower(functionappName)
+  }
+  {
     name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
     value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageAccountKey};EndpointSuffix=core.windows.net'
   }
@@ -143,6 +147,9 @@ module queue 'modules/queue.bicep' = {
     storageAccountName: functionAppStorageAccountName
     queueName: queueName
   }
+  dependsOn: [
+    functionAppStorageAccount
+  ]
 }
 
 module deploymentScript 'modules/deploymentScript.bicep' = {
@@ -152,6 +159,9 @@ module deploymentScript 'modules/deploymentScript.bicep' = {
     storageAccountName: storageAccountName
     blobContainerName: blobContainerName
   }
+  dependsOn: [
+    storageAccount
+  ]
 }
 
 // create file share
@@ -161,6 +171,9 @@ module fileShare 'modules/fileshare.bicep' = {
     storageAccountName: storageAccountName
     fileShareName: fileShareName
   }
+  dependsOn: [
+    storageAccount
+  ]
 }
 
 // create script share
@@ -170,6 +183,9 @@ module scriptFileShare 'modules/fileshare.bicep' = {
     storageAccountName: storageAccountName
     fileShareName: scriptShareName
   }
+  dependsOn: [
+    storageAccount
+  ] 
 }
 
 // create blob storage
@@ -179,6 +195,9 @@ module blobContainer 'modules/blobcontainer.bicep' = {
     storageAccountName: storageAccountName
     blobContainerName: blobContainerName
   }
+  dependsOn: [
+    storageAccount
+  ]
 }
 
 // create function app
@@ -217,6 +236,7 @@ module cosmosdbsqldatabase 'modules/cosmosdbsqldatabase.bicep' = {
   params: {
     cosmosdbaccountName: cosmosdbaccountName
     cosmosdbsqlDatabaseName: cosmosdbsqldatabaseName
+    //cosmosdbaccountNameId: cosmosdbaccount.outputs.cosmosdbaccountId
   }
   dependsOn: [
     cosmosdbaccount
