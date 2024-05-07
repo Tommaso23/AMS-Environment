@@ -157,6 +157,8 @@ module deploymentScript 'modules/deploymentScript.bicep' = {
   params: {
     location: location
     storageAccountName: storageAccountName
+    storageAccountId: storageAccount.outputs.storageAccountId
+    storageAccountApiVersion: storageAccount.outputs.storageAccountApiVersion
     blobContainerName: blobContainerName
   }
   dependsOn: [
