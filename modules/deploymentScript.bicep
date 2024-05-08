@@ -22,7 +22,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   kind: 'AzureCLI'
   properties: {
     azCliVersion: '2.52.0'
-    scriptContent: 'wget https://github.com/Tommaso23/Azure-Media-Services-environment/blob/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name ${storageAccountName} --sas-token "${sasToken}" --container-name ${blobContainerName} --name functionApp.zip --type block --file functionApp.zip --overwrite true'
+    scriptContent: 'wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name ${storageAccountName} --sas-token "${sasToken}" --container-name ${blobContainerName} --name functionApp.zip --type block --file functionApp.zip --overwrite true'
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
   }
