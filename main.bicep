@@ -4,6 +4,7 @@ param functionAppStorageAccountName string = 'stmediaservicesfuncapp01'
 param fileShareName string = 'assets-share'
 param scriptShareName string = 'script-share'
 param blobContainerName string = 'assets-storage-container'
+param functionAppBlobContainerName string = 'code-storage-container'
 param queueName string = 'functionapp-queue'
 param cosmosdbaccountName string = 'cosmos-mediaservices'
 param cosmosdbsqldatabaseName string = 'sqldb-mediaservices'
@@ -140,6 +141,18 @@ module functionAppStorageAccount 'modules/storageaccount.bicep'= {
   }
 }
 
+module functionAppBlobContainer 'modules/blobcontainer.bicep' = {
+  name: 'functionAppBlobContainer'
+  params: {
+    storageAccountName: functionAppStorageAccountName
+    blobContainerName: functionAppBlobContainerName
+  }
+  dependsOn: [
+    functionAppStorageAccount
+  ]
+
+}
+
 //create queue
 module queue 'modules/queue.bicep' = {
   name: 'queue'
@@ -156,13 +169,13 @@ module deploymentScript 'modules/deploymentScript.bicep' = {
   name: 'deploymentScript'
   params: {
     location: location
-    storageAccountName: storageAccountName
-    storageAccountId: storageAccount.outputs.storageAccountId
-    storageAccountApiVersion: storageAccount.outputs.storageAccountApiVersion
+    storageAccountName: functionAppStorageAccountName
+    storageAccountId: functionAppStorageAccount.outputs.storageAccountId
+    storageAccountApiVersion: functionAppStorageAccount.outputs.storageAccountApiVersion
     blobContainerName: blobContainerName
   }
   dependsOn: [
-    storageAccount
+    functionAppStorageAccount
   ]
 }
 
