@@ -123,6 +123,8 @@ var appSettings = [
   }
 */
 ]
+var storageBlobReaderRoleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')
+
 // create storage account for media assets
 module storageAccount 'modules/storageaccount.bicep' = {
   name: 'storageAccount'
@@ -225,6 +227,21 @@ module functionApp 'modules/functionapp.bicep' = {
     serverFarmId: functionappAppServicePlanName
     appSettings: appSettings
   }
+  dependsOn: [
+    deploymentScript
+  ]
+}
+
+module functionRoleAssignment 'modules/roleassignment.bicep' = {
+  name: 'functionRoleAssignment'
+  params: {
+    roleDefinitionId: storageBlobReaderRoleDefinitionId
+    principalId: functionApp.outputs.principalId
+  }
+  dependsOn: [
+    functionApp
+    deploymentScript
+  ]
 }
 
 //create app service plan
