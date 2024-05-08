@@ -16,7 +16,7 @@ param functionappName string = 'fa-mediaservices'
 param functionappAppServicePlanName string = 'functionapp-plan-mediaservices'
 param logAnalyticsWorkspaceName string = 'logAnalytics-mediaservices'
 param applicationInsightsName string = 'applicationInsights-mediaservices'
-//'C:\Users\t-tbucaioni\Desktop\tom-encoder.zip'
+
 /*
 param vaults_vault138_name string = 'vault138'
 param serverfarms_GermanyWestCentralLinuxDynamicPlan_name string = 'GermanyWestCentralLinuxDynamicPlan'
@@ -141,6 +141,7 @@ module functionAppStorageAccount 'modules/storageaccount.bicep'= {
   }
 }
 
+// create blob container for functionApp.zip
 module functionAppBlobContainer 'modules/blobcontainer.bicep' = {
   name: 'functionAppBlobContainer'
   params: {
@@ -164,7 +165,7 @@ module queue 'modules/queue.bicep' = {
     functionAppStorageAccount
   ]
 }
-
+// create ddeployment script
 module deploymentScript 'modules/deploymentScript.bicep' = {
   name: 'deploymentScript'
   params: {
