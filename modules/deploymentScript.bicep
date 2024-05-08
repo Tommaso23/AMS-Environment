@@ -27,3 +27,5 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     retentionInterval: 'P1D'
   }
 }
+
+output blobUrl string = 'https://${storageAccountName}.blob.core.windows.net/${blobContainerName}/functionApp.zip'

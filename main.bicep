@@ -37,7 +37,7 @@ var appSettings = [
   }
   {
     name: 'COSMOS_DB_DATABASE'
-    value: cosmosdbaccountName
+    value: cosmosdbsqldatabaseName
   }
   {
     name: 'COSMOS_DB_ENCODERJOBS_CONTAINER'
@@ -116,8 +116,13 @@ var appSettings = [
     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
     value: applicationInsights.outputs.instrumentationKey
   }
+  {
+    name: 'WEBSITE_RUN_FROM_PACKAGE'
+    value: deploymentScript.outputs.blobUrl
+  }
   
   /*{
+    https://tomencfasa.blob.core.windows.net/function-releases/20240327102907-08f88fcf7b2b91dcbc05dac9046e2eb1.zip?sv=2022-11-02&st=2024-03-27T10%3A24%3A35Z&se=2034-03-27T10%3A29%3A35Z&sr=b&sp=r&sig=9yCWOIf9pR7dS1IZGtlMqKppsNh6h7CkU9m8G5GYYfc%3D
     //name: 'WEBSITE_RUN_FROM_PACKAGE'
     //value: 'https://tomencfasa.blob.core.windows.net/function-releases/20240327102907-08f88fcf7b2b91dcbc05dac9046e2eb1.zip?sv=2022-11-02&st=2024-03-27T10%3A24%3A35Z&se=2034-03-27T10%3A29%3A35Z&sr=b&sp=r&sig=9yCWOIf9pR7dS1IZGtlMqKppsNh6h7CkU9m8G5GYYfc%3D'
   }
@@ -175,10 +180,10 @@ module deploymentScript 'modules/deploymentScript.bicep' = {
     storageAccountName: functionAppStorageAccountName
     storageAccountId: functionAppStorageAccount.outputs.storageAccountId
     storageAccountApiVersion: functionAppStorageAccount.outputs.storageAccountApiVersion
-    blobContainerName: blobContainerName
+    blobContainerName: functionAppBlobContainerName
   }
   dependsOn: [
-    functionAppStorageAccount
+    functionAppBlobContainer
   ]
 }
 
