@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12933675549420901790"
+      "templateHash": "9779290931170741189"
     }
   },
   "variables": {
@@ -846,7 +846,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "functionRoleAssignment",
+      "name": "functionStorageRoleAssignment",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
