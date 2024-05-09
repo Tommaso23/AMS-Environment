@@ -1,18 +1,4 @@
-param location string = 'germanywestcentral'
-param fileShareName string = 'assets-share'
-param scriptShareName string = 'script-share'
-param blobContainerName string = 'assets-storage-container'
-param functionAppBlobContainerName string = 'code-storage-container'
-param queueName string = 'encoderjobs-queue'
-param sqlcontainerJobsName string = 'EncoderJobs'
-param sqlcontainerPresetsName string = 'EncoderPresets'
-param containerInstanceContributorRoleActions array = [
-  'Microsoft.ContainerInstance/*'
-]
-param containerInstanceContributorRoleNotActions array = []
-param containerInstanceContributorRoleName string = 'Custom - Container Instance Contributor'
-param containerInstanceContributorRoleDescription string = 'Custom role to manage container instances'
-
+var location = resourceGroup().location
 var uniqueId = take(uniqueString(subscription().subscriptionId, resourceGroup().id), 7)
 var storageAccountName = 'stmediaservices${uniqueId}'
 var functionAppStorageAccountName = 'stmediaservicesfa${uniqueId}'
@@ -26,9 +12,21 @@ var functionappAppServicePlanName = 'asp-mediaservices-${uniqueId}'
 var applicationInsightsName = 'appi-mediaservices-${uniqueId}'
 var deploymentScriptName = 'depfunczip-mediaservices-${uniqueId}'
 var containerInstanceContributorRoleDefName = guid(containerInstanceContributorRoleName)
+var fileShareName = 'assets-share'
+var scriptShareName = 'script-share'
+var queueName = 'encoderjobs-queue'
+var blobContainerName = 'assets-storage-container'
+var functionAppBlobContainerName = 'code-storage-container'
+var sqlcontainerJobsName = 'EncoderJobs'
+var sqlcontainerPresetsName = 'EncoderPresets'
+var containerInstanceContributorRoleActions = [
+  'Microsoft.ContainerInstance/*'
+]
+var containerInstanceContributorRoleNotActions = []
+var containerInstanceContributorRoleName = 'Custom - Container Instance Contributor'
+var containerInstanceContributorRoleDescription = 'Custom role to manage container instances'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
 var appSettings = [
-
   {
     name: 'AzureWebJobsStorage'
     value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
@@ -271,7 +269,7 @@ module functionContainerRoleAssignment 'modules/roleassignment.bicep' = {
 }
 
 //create app service plan
-module appServicePlan 'modules/appserviceplan.bicep' = {
+module appServicePlan 'modules/appServicePlan.bicep' = {
   name: 'appServicePlan'
   params: {
     location: location
@@ -354,7 +352,7 @@ module sqlRoleDefinition 'modules/sqlRoleDefinition.bicep' = {
   }
 }
 
-module sqlroleAssignment 'modules/sqlroleAssignment.bicep' = {
+module sqlroleAssignment 'modules/sqlRoleAssignment.bicep' = {
   name: 'sqlroleAssignment'
   params: {
     cosmosDBAccountName: cosmosdbaccountName
