@@ -11,7 +11,6 @@ var logAnalyticsWorkspaceName = 'log-mediaservices-${uniqueId}'
 var functionappAppServicePlanName = 'asp-mediaservices-${uniqueId}'
 var applicationInsightsName = 'appi-mediaservices-${uniqueId}'
 var deploymentScriptName = 'depfunczip-mediaservices-${uniqueId}'
-var containerInstanceContributorRoleDefName = guid(subscription().id, containerInstanceContributorRoleName)
 var fileShareName = 'assets-share'
 var scriptShareName = 'script-share'
 var queueName = 'encoderjobs-queue'
@@ -19,15 +18,6 @@ var blobContainerName = 'assets-storage-container'
 var functionAppBlobContainerName = 'code-storage-container'
 var sqlcontainerJobsName = 'EncoderJobs'
 var sqlcontainerPresetsName = 'EncoderPresets'
-var containerInstanceContributorRoleActions = [
-  'Microsoft.ContainerInstance/*'
-]
-var containerInstanceContributorRoleNotActions = []
-var assignableScope = [
-  '/subscriptions/${subscription().subscriptionId}'
-]
-var containerInstanceContributorRoleName = 'CUSTOM MEDIA SERVICES - Container Instances Contributor'
-var containerInstanceContributorRoleDescription = 'Custom role to manage container instances'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
 var appSettings = [
   {
@@ -129,6 +119,7 @@ var appSettings = [
   }
 ]
 var storageBlobReaderRoleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')
+var contributorRoleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
 
 // create storage account for media assets
 module storageAccount 'modules/storageaccount.bicep' = {
@@ -241,18 +232,6 @@ module functionApp 'modules/functionapp.bicep' = {
   ]
 }
 
-module functionContainerRoleDefinition 'modules/rbacroledefinition.bicep' = {
-  name: 'functionContainerRoleDefinition'
-  params: {
-    roleName: containerInstanceContributorRoleName
-    roleDescription: containerInstanceContributorRoleDescription
-    actions: containerInstanceContributorRoleActions
-    notActions: containerInstanceContributorRoleNotActions
-    roleDefName: containerInstanceContributorRoleDefName
-    assignableScopes: assignableScope
-  }
-}
-
 module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
   name: 'functionRoleAssignment'
   params: {
@@ -268,7 +247,7 @@ module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
 module functionContainerRoleAssignment 'modules/roleassignment.bicep' = {
   name: 'functionContainerRoleAssignment'
   params: {
-    roleDefinitionId: functionContainerRoleDefinition.outputs.roleDefinitionId
+    roleDefinitionId: contributorRoleDefinitionId
     principalId: functionApp.outputs.principalId
   }
 }
