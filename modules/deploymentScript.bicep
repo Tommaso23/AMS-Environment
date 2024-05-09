@@ -1,7 +1,9 @@
 param location string
 param deploymentScriptName string
 param storageAccountName string
+param functionAppStorageAccountName string
 param blobContainerName string
+param fileShareName string
 param storageAccountId string
 param storageAccountApiVersion string = '2023-05-01'
 param currentTime string = utcNow('u')
@@ -23,7 +25,8 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   kind: 'AzureCLI'
   properties: {
     azCliVersion: '2.52.0'
-    scriptContent: 'wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name ${storageAccountName} --sas-token "${sasToken}" --container-name ${blobContainerName} --name functionApp.zip --type block --file functionApp.zip --overwrite true'
+    scriptContent: 'wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name ${functionAppStorageAccountName} --sas-token "${sasToken}" --container-name ${blobContainerName} --name functionApp.zip --type block --file functionApp.zip --overwrite true && wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/ffmpegscript.sh -O ffmpegscript.sh && az storage file upload --account-name ${storageAccountName} --sas-token "${sasToken}" --share-name ${fileShareName} --source ffmpegscript.sh --name ffmpegscript.sh ' 
+    
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
   }
