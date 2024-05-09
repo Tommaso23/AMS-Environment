@@ -352,7 +352,7 @@ module sqlRoleDefinition 'modules/sqlRoleDefinition.bicep' = {
   }
 }
 
-module sqlroleAssignment 'modules/sqlroleAssignment.bicep' = {
+module sqlroleAssignment 'modules/sqlRoleAssignment.bicep' = {
   name: 'sqlroleAssignment'
   params: {
     cosmosDBAccountName: cosmosdbaccountName
@@ -381,4 +381,3 @@ module applicationInsights 'modules/applicationInsights.bicep' = {
     workspaceId: logAnalytics.outputs.logAnlayticsWorkspaceId
   }
 }
-
