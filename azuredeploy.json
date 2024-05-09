@@ -5,47 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "4752616599043697340"
+      "templateHash": "3189290939853234434"
     }
   },
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "germanywestcentral"
-    },
-    "fileShareName": {
-      "type": "string",
-      "defaultValue": "assets-share"
-    },
-    "scriptShareName": {
-      "type": "string",
-      "defaultValue": "script-share"
-    },
-    "blobContainerName": {
-      "type": "string",
-      "defaultValue": "assets-storage-container"
-    },
-    "functionAppBlobContainerName": {
-      "type": "string",
-      "defaultValue": "code-storage-container"
-    },
-    "queueName": {
-      "type": "string",
-      "defaultValue": "encoderjobs-queue"
-    },
-    "sqlcontainerJobsName": {
-      "type": "string",
-      "defaultValue": "EncoderJobs"
-    },
-    "sqlcontainerPresetsName": {
-      "type": "string",
-      "defaultValue": "EncoderPresets"
-    },
-    "containerInstanceContributorRoleActions": {
-      "type": "array",
-      "defaultValue": [
-        "Microsoft.ContainerInstance/*"
-      ]
+      "defaultValue": "[resourceGroup().location]"
     },
     "containerInstanceContributorRoleNotActions": {
       "type": "array",
@@ -74,6 +40,16 @@
     "applicationInsightsName": "[format('appi-mediaservices-{0}', variables('uniqueId'))]",
     "deploymentScriptName": "[format('depfunczip-mediaservices-{0}', variables('uniqueId'))]",
     "containerInstanceContributorRoleDefName": "[guid(parameters('containerInstanceContributorRoleName'))]",
+    "fileShareName": "assets-share",
+    "scriptShareName": "script-share",
+    "queueName": "encoderjobs-queue",
+    "blobContainerName": "assets-storage-container",
+    "functionAppBlobContainerName": "code-storage-container",
+    "sqlcontainerJobsName": "EncoderJobs",
+    "sqlcontainerPresetsName": "EncoderPresets",
+    "containerInstanceContributorRoleActions": [
+      "Microsoft.ContainerInstance/*"
+    ],
     "containerInstanceName": "[format('ci-mediaservices-{0}', variables('uniqueId'))]",
     "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]"
   },
@@ -290,7 +266,7 @@
             "value": "[variables('functionAppStorageAccountName')]"
           },
           "blobContainerName": {
-            "value": "[parameters('functionAppBlobContainerName')]"
+            "value": "[variables('functionAppBlobContainerName')]"
           }
         },
         "template": {
@@ -345,7 +321,7 @@
             "value": "[variables('functionAppStorageAccountName')]"
           },
           "queueName": {
-            "value": "[parameters('queueName')]"
+            "value": "[variables('queueName')]"
           }
         },
         "template": {
@@ -408,7 +384,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount'), '2022-09-01').outputs.storageAccountApiVersion.value]"
           },
           "blobContainerName": {
-            "value": "[parameters('functionAppBlobContainerName')]"
+            "value": "[variables('functionAppBlobContainerName')]"
           }
         },
         "template": {
@@ -498,7 +474,7 @@
             "value": "[variables('storageAccountName')]"
           },
           "fileShareName": {
-            "value": "[parameters('fileShareName')]"
+            "value": "[variables('fileShareName')]"
           }
         },
         "template": {
@@ -551,7 +527,7 @@
             "value": "[variables('storageAccountName')]"
           },
           "fileShareName": {
-            "value": "[parameters('scriptShareName')]"
+            "value": "[variables('scriptShareName')]"
           }
         },
         "template": {
@@ -604,7 +580,7 @@
             "value": "[variables('storageAccountName')]"
           },
           "blobContainerName": {
-            "value": "[parameters('blobContainerName')]"
+            "value": "[variables('blobContainerName')]"
           }
         },
         "template": {
@@ -680,11 +656,11 @@
               },
               {
                 "name": "COSMOS_DB_ENCODERJOBS_CONTAINER",
-                "value": "[parameters('sqlcontainerJobsName')]"
+                "value": "[variables('sqlcontainerJobsName')]"
               },
               {
                 "name": "COSMOS_DB_PRESETS_CONTAINER",
-                "value": "[parameters('sqlcontainerPresetsName')]"
+                "value": "[variables('sqlcontainerPresetsName')]"
               },
               {
                 "name": "COSMOS_DB_ENDPOINT",
@@ -696,11 +672,11 @@
               },
               {
                 "name": "ENCODER_ASSETS_STORAGE_CONTAINER_NAME",
-                "value": "[parameters('blobContainerName')]"
+                "value": "[variables('blobContainerName')]"
               },
               {
                 "name": "ENCODER_ASSETS_STORAGE_FILESHARE_NAME",
-                "value": "[parameters('fileShareName')]"
+                "value": "[variables('fileShareName')]"
               },
               {
                 "name": "FA_STORAGE_ACCOUNT_NAME",
@@ -708,7 +684,7 @@
               },
               {
                 "name": "FA_STORAGE_ENCODERJOBS_QUEUE_NAME",
-                "value": "[parameters('queueName')]"
+                "value": "[variables('queueName')]"
               },
               {
                 "name": "FUNCTIONS_WORKER_RUNTIME",
@@ -878,7 +854,7 @@
             "value": "[parameters('containerInstanceContributorRoleDescription')]"
           },
           "actions": {
-            "value": "[parameters('containerInstanceContributorRoleActions')]"
+            "value": "[variables('containerInstanceContributorRoleActions')]"
           },
           "notActions": {
             "value": "[parameters('containerInstanceContributorRoleNotActions')]"
@@ -1307,7 +1283,7 @@
             "value": "[variables('cosmosdbsqldatabaseName')]"
           },
           "sqlcontainerName": {
-            "value": "[parameters('sqlcontainerJobsName')]"
+            "value": "[variables('sqlcontainerJobsName')]"
           }
         },
         "template": {
@@ -1394,7 +1370,7 @@
             "value": "[variables('cosmosdbsqldatabaseName')]"
           },
           "sqlcontainerName": {
-            "value": "[parameters('sqlcontainerPresetsName')]"
+            "value": "[variables('sqlcontainerPresetsName')]"
           }
         },
         "template": {
