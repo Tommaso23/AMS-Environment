@@ -1,32 +1,23 @@
-var uniqueId = take(uniqueString(subscription().subscriptionId), 6)
-
 param location string = 'germanywestcentral'
-var storageAccountName = 'samediaservices${uniqueId}'
-var functionAppStorageAccountName = 'storagefapp${uniqueId}'
 param fileShareName string = 'assets-share'
 param scriptShareName string = 'script-share'
 param blobContainerName string = 'assets-storage-container'
 param functionAppBlobContainerName string = 'code-storage-container'
 param queueName string = 'encoderjobs-queue'
-var cosmosdbaccountName = 'cosmos-mediaservices-${uniqueId}'
-var cosmosdbsqldatabaseName = 'sqldb-mediaservices-${uniqueId}'
 param sqlcontainerJobsName string = 'EncoderJobs'
 param sqlcontainerPresetsName string = 'EncoderPresets'
+
+var uniqueId = take(uniqueString(subscription().subscriptionId), 7)
+var storageAccountName = 'stmediaservices${uniqueId}'
+var functionAppStorageAccountName = 'stmediaservicesfa${uniqueId}'
+var cosmosdbaccountName = 'cosmos-mediaservices-${uniqueId}'
+var cosmosdbsqldatabaseName = 'cossql-mediaservices-${uniqueId}'
 var cdnProfileName = 'cdn-mediaservices-${uniqueId}'
-var privateEndpointName = 'pe-cdn-mediaservices-${uniqueId}'
-param functionappName string = 'fa-mediaservices'
-param functionappAppServicePlanName string = 'functionapp-plan-mediaservices'
-param logAnalyticsWorkspaceName string = 'logAnalytics-mediaservices'
-param applicationInsightsName string = 'applicationInsights-mediaservices'
-
-/*
-param vaults_vault138_name string = 'vault138'
-param serverfarms_GermanyWestCentralLinuxDynamicPlan_name string = 'GermanyWestCentralLinuxDynamicPlan'
-param actionGroups_Application_Insights_Smart_Detection_name string = 'Application Insights Smart Detection'
-param smartdetectoralertrules_failure_anomalies_tom_encoder_fa_api_name string = 'failure anomalies - tom-encoder-fa-api'
-param workspaces_DefaultWorkspace_d0bdc55f_fe1e_4172_96a6_6b55f5dd28ff_DEWC_externalid string = '/subscriptions/d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-d0bdc55f-fe1e-4172-96a6-6b55f5dd28ff-DEWC'
-*/
-
+var cdnEndpointName = 'cdne-mediaservices-${uniqueId}'
+var functionappName = 'func-mediaservices-${uniqueId}'
+var logAnalyticsWorkspaceName = 'log-mediaservices-${uniqueId}'
+var functionappAppServicePlanName = 'asp-mediaservices-${uniqueId}'
+var applicationInsightsName = 'appi-mediaservices-${uniqueId}'
 var appSettings = [
 
   {
@@ -318,11 +309,11 @@ module cdn 'modules/cdn.bicep' = {
 }
 
 // create private endpoint for CDN
-module privateEndpoint 'modules/privateendpoint.bicep' = {
-  name: 'privateEndpoint'
+module cdnEndpoint 'modules/cdnendpoint.bicep' = {
+  name: 'cdnEndpoint'
   params: {
     cdnProfileName: cdnProfileName
-    privateEndpointName: privateEndpointName
+    cdnEndpointName: cdnEndpointName
     originHostName: storageAccount.outputs.blobEndpoint
   }
 }
