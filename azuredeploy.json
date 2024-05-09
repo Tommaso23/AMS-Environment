@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "17888726110487817618"
+      "templateHash": "9326491072329630224"
     }
   },
   "variables": {
@@ -35,7 +35,7 @@
     ],
     "containerInstanceContributorRoleNotActions": [],
     "assignableScope": [
-      "[subscription().id]"
+      "[format('/subscriptions/{0}', subscription().subscriptionId)]"
     ],
     "containerInstanceContributorRoleName": "CUSTOM MEDIA SERVICES - Container Instances Contributor",
     "containerInstanceContributorRoleDescription": "Custom role to manage container instances",
