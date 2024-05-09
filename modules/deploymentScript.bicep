@@ -21,7 +21,7 @@ var sasDefinition = {
 }
 
 var functionAppSasToken = listAccountSas(functionAppStorageAccountId, storageAccountApiVersion, sasDefinition).accountSasToken
-var sasToken = listAccountsSas(storageAccountId, storageAccountApiVersion, sasDefinition).accountSasToken
+var sasToken = listAccountSas(storageAccountId, storageAccountApiVersion, sasDefinition).accountSasToken
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName
