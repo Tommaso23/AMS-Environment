@@ -381,3 +381,4 @@ module applicationInsights 'modules/applicationInsights.bicep' = {
     workspaceId: logAnalytics.outputs.logAnlayticsWorkspaceId
   }
 }
+
