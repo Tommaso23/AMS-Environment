@@ -5,28 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "3189290939853234434"
-    }
-  },
-  "parameters": {
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]"
-    },
-    "containerInstanceContributorRoleNotActions": {
-      "type": "array",
-      "defaultValue": []
-    },
-    "containerInstanceContributorRoleName": {
-      "type": "string",
-      "defaultValue": "Custom - Container Instance Contributor"
-    },
-    "containerInstanceContributorRoleDescription": {
-      "type": "string",
-      "defaultValue": "Custom role to manage container instances"
+      "templateHash": "10863502090901242736"
     }
   },
   "variables": {
+    "location": "[resourceGroup().location]",
     "uniqueId": "[take(uniqueString(subscription().subscriptionId, resourceGroup().id), 7)]",
     "storageAccountName": "[format('stmediaservices{0}', variables('uniqueId'))]",
     "functionAppStorageAccountName": "[format('stmediaservicesfa{0}', variables('uniqueId'))]",
@@ -39,7 +22,7 @@
     "functionappAppServicePlanName": "[format('asp-mediaservices-{0}', variables('uniqueId'))]",
     "applicationInsightsName": "[format('appi-mediaservices-{0}', variables('uniqueId'))]",
     "deploymentScriptName": "[format('depfunczip-mediaservices-{0}', variables('uniqueId'))]",
-    "containerInstanceContributorRoleDefName": "[guid(parameters('containerInstanceContributorRoleName'))]",
+    "containerInstanceContributorRoleDefName": "[guid(variables('containerInstanceContributorRoleName'))]",
     "fileShareName": "assets-share",
     "scriptShareName": "script-share",
     "queueName": "encoderjobs-queue",
@@ -50,6 +33,9 @@
     "containerInstanceContributorRoleActions": [
       "Microsoft.ContainerInstance/*"
     ],
+    "containerInstanceContributorRoleNotActions": [],
+    "containerInstanceContributorRoleName": "Custom - Container Instance Contributor",
+    "containerInstanceContributorRoleDescription": "Custom role to manage container instances",
     "containerInstanceName": "[format('ci-mediaservices-{0}', variables('uniqueId'))]",
     "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]"
   },
@@ -65,7 +51,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "storageAccountName": {
             "value": "[variables('storageAccountName')]"
@@ -164,7 +150,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "storageAccountName": {
             "value": "[variables('functionAppStorageAccountName')]"
@@ -369,7 +355,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "deploymentScriptName": {
             "value": "[variables('deploymentScriptName')]"
@@ -632,7 +618,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "functionAppName": {
             "value": "[variables('functionappName')]"
@@ -848,16 +834,16 @@
         "mode": "Incremental",
         "parameters": {
           "roleName": {
-            "value": "[parameters('containerInstanceContributorRoleName')]"
+            "value": "[variables('containerInstanceContributorRoleName')]"
           },
           "roleDescription": {
-            "value": "[parameters('containerInstanceContributorRoleDescription')]"
+            "value": "[variables('containerInstanceContributorRoleDescription')]"
           },
           "actions": {
             "value": "[variables('containerInstanceContributorRoleActions')]"
           },
           "notActions": {
-            "value": "[parameters('containerInstanceContributorRoleNotActions')]"
+            "value": "[variables('containerInstanceContributorRoleNotActions')]"
           },
           "roleDefName": {
             "value": "[variables('containerInstanceContributorRoleDefName')]"
@@ -1045,7 +1031,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "functionappAppServicePlanName": {
             "value": "[variables('functionappAppServicePlanName')]"
@@ -1117,7 +1103,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "cosmosDBAccountName": {
             "value": "[variables('cosmosdbaccountName')]"
@@ -1757,7 +1743,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "logAnalyticsWorkspaceName": {
             "value": "[variables('logAnalyticsWorkspaceName')]"
@@ -1823,7 +1809,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "applicationInsightsName": {
             "value": "[variables('applicationInsightsName')]"
