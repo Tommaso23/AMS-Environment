@@ -269,7 +269,7 @@ module functionContainerRoleAssignment 'modules/roleassignment.bicep' = {
 }
 
 //create app service plan
-module appServicePlan 'modules/appserviceplan.bicep' = {
+module appServicePlan 'modules/appServicePlan.bicep' = {
   name: 'appServicePlan'
   params: {
     location: location
