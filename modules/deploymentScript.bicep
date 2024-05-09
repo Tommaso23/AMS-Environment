@@ -19,9 +19,17 @@ var sasDefinition = {
   signedProtocol: 'https'
   keyTosign: 'key1'
 }
+var fileSasDefinition = {
+  signedServices: 'f'
+  signedPermission: 'rwdlacup'
+  signedExpiry: dateTimeAdd(currentTime, 'PT1H')
+  signedResourceTypes: 'sco'
+  signedProtocol: 'https'
+  keyTosign: 'key1'
+}
 
 var functionAppSasToken = listAccountSas(functionAppStorageAccountId, storageAccountApiVersion, sasDefinition).accountSasToken
-var sasToken = listAccountSas(storageAccountId, storageAccountApiVersion, sasDefinition).accountSasToken
+var sasToken = listAccountSas(storageAccountId, storageAccountApiVersion,fileSasDefinition).accountSasToken
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName
