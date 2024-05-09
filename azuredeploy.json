@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "9326491072329630224"
+      "templateHash": "12933675549420901790"
     }
   },
   "variables": {
@@ -22,7 +22,6 @@
     "functionappAppServicePlanName": "[format('asp-mediaservices-{0}', variables('uniqueId'))]",
     "applicationInsightsName": "[format('appi-mediaservices-{0}', variables('uniqueId'))]",
     "deploymentScriptName": "[format('depfunczip-mediaservices-{0}', variables('uniqueId'))]",
-    "containerInstanceContributorRoleDefName": "[guid(subscription().id, variables('containerInstanceContributorRoleName'))]",
     "fileShareName": "assets-share",
     "scriptShareName": "script-share",
     "queueName": "encoderjobs-queue",
@@ -30,17 +29,9 @@
     "functionAppBlobContainerName": "code-storage-container",
     "sqlcontainerJobsName": "EncoderJobs",
     "sqlcontainerPresetsName": "EncoderPresets",
-    "containerInstanceContributorRoleActions": [
-      "Microsoft.ContainerInstance/*"
-    ],
-    "containerInstanceContributorRoleNotActions": [],
-    "assignableScope": [
-      "[format('/subscriptions/{0}', subscription().subscriptionId)]"
-    ],
-    "containerInstanceContributorRoleName": "CUSTOM MEDIA SERVICES - Container Instances Contributor",
-    "containerInstanceContributorRoleDescription": "Custom role to manage container instances",
     "containerInstanceName": "[format('ci-mediaservices-{0}', variables('uniqueId'))]",
-    "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]"
+    "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+    "contributorRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
   },
   "resources": [
     {
@@ -855,93 +846,6 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "functionContainerRoleDefinition",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "roleName": {
-            "value": "[variables('containerInstanceContributorRoleName')]"
-          },
-          "roleDescription": {
-            "value": "[variables('containerInstanceContributorRoleDescription')]"
-          },
-          "actions": {
-            "value": "[variables('containerInstanceContributorRoleActions')]"
-          },
-          "notActions": {
-            "value": "[variables('containerInstanceContributorRoleNotActions')]"
-          },
-          "roleDefName": {
-            "value": "[variables('containerInstanceContributorRoleDefName')]"
-          },
-          "assignableScopes": {
-            "value": "[variables('assignableScope')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "4793468021930648598"
-            }
-          },
-          "parameters": {
-            "roleDefName": {
-              "type": "string"
-            },
-            "roleName": {
-              "type": "string"
-            },
-            "roleDescription": {
-              "type": "string"
-            },
-            "actions": {
-              "type": "array"
-            },
-            "notActions": {
-              "type": "array"
-            },
-            "assignableScopes": {
-              "type": "array"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Authorization/roleDefinitions",
-              "apiVersion": "2022-04-01",
-              "name": "[parameters('roleDefName')]",
-              "properties": {
-                "roleName": "[parameters('roleName')]",
-                "description": "[parameters('roleDescription')]",
-                "type": "customRole",
-                "permissions": [
-                  {
-                    "actions": "[parameters('actions')]",
-                    "notActions": "[parameters('notActions')]"
-                  }
-                ],
-                "assignableScopes": "[parameters('assignableScopes')]"
-              }
-            }
-          ],
-          "outputs": {
-            "roleDefinitionId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefName'))]"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
       "name": "functionRoleAssignment",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1007,7 +911,7 @@
         "mode": "Incremental",
         "parameters": {
           "roleDefinitionId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'functionContainerRoleDefinition'), '2022-09-01').outputs.roleDefinitionId.value]"
+            "value": "[variables('contributorRoleDefinitionId')]"
           },
           "principalId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'functionApp'), '2022-09-01').outputs.principalId.value]"
@@ -1049,8 +953,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'functionApp')]",
-        "[resourceId('Microsoft.Resources/deployments', 'functionContainerRoleDefinition')]"
+        "[resourceId('Microsoft.Resources/deployments', 'functionApp')]"
       ]
     },
     {
