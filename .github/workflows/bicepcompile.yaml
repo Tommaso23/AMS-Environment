@@ -9,10 +9,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Compile bicep
-        uses: Azure/bicep-build-action@v1.0.0
+        uses: azure/cli@v2
         with:
-          bicepFilePath: main.bicep
-          outputFilePath: azuredeploy.json
+          azcliversion: latest
+          inlineScript: |
+            az bicep build --file main.bicep --outfile azuredeploy.json
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
