@@ -13,7 +13,7 @@ var roleDefName = guid(roleName)
 
 
 
-resource RoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2021-04-15' = {
+resource RoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2023-11-15' = {
   name: '${cosmosdbAccountName}/${roleDefName}'
   properties: {
     roleName: roleName

@@ -1,7 +1,7 @@
 param storageAccountName string
 param location string 
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'= {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01'= {
   name: storageAccountName
   location: location
   tags: {

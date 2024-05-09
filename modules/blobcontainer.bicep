@@ -2,7 +2,7 @@ param blobContainerName string
 param storageAccountName string
 
 
-resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-04-01' = {
   name: '${storageAccountName}/default/${blobContainerName}'
   properties: {
     immutableStorageWithVersioning: {
