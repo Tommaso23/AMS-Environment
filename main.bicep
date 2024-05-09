@@ -24,7 +24,7 @@ var containerInstanceContributorRoleActions = [
 ]
 var containerInstanceContributorRoleNotActions = []
 var assignableScope = [
-  subscription().id
+  '/subscriptions/${subscription().subscriptionId}'
 ]
 var containerInstanceContributorRoleName = 'CUSTOM MEDIA SERVICES - Container Instances Contributor'
 var containerInstanceContributorRoleDescription = 'Custom role to manage container instances'
