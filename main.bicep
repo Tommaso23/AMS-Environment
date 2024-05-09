@@ -26,7 +26,7 @@ var containerInstanceContributorRoleNotActions = []
 var assignableScope = [
   resourceGroup().id
 ]
-var containerInstanceContributorRoleName = 'Custom - Container Instance Contributor'
+var containerInstanceContributorRoleName = 'Custom - Container Instances Contributor'
 var containerInstanceContributorRoleDescription = 'Custom role to manage container instances'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
 var appSettings = [
