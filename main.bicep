@@ -178,7 +178,8 @@ module deploymentScript 'modules/deploymentScript.bicep' = {
     storageAccountName: storageAccountName
     functionAppStorageAccountName: functionAppStorageAccountName
     fileShareName: scriptShareName
-    storageAccountId: functionAppStorageAccount.outputs.storageAccountId
+    storageAccountId: storageAccount.outputs.storageAccountId
+    functionAppStorageAccountId: functionAppStorageAccount.outputs.storageAccountId
     storageAccountApiVersion: functionAppStorageAccount.outputs.storageAccountApiVersion
     blobContainerName: functionAppBlobContainerName
   }
