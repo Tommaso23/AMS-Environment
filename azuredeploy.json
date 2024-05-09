@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "10863502090901242736"
+      "templateHash": "17122308561687806784"
     }
   },
   "variables": {
@@ -361,7 +361,13 @@
             "value": "[variables('deploymentScriptName')]"
           },
           "storageAccountName": {
+            "value": "[variables('storageAccountName')]"
+          },
+          "functionAppStorageAccountName": {
             "value": "[variables('functionAppStorageAccountName')]"
+          },
+          "fileShareName": {
+            "value": "[variables('scriptShareName')]"
           },
           "storageAccountId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount'), '2022-09-01').outputs.storageAccountId.value]"
@@ -380,7 +386,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "17518790254496101193"
+              "templateHash": "6503956475412174506"
             }
           },
           "parameters": {
@@ -393,7 +399,13 @@
             "storageAccountName": {
               "type": "string"
             },
+            "functionAppStorageAccountName": {
+              "type": "string"
+            },
             "blobContainerName": {
+              "type": "string"
+            },
+            "fileShareName": {
               "type": "string"
             },
             "storageAccountId": {
@@ -427,7 +439,7 @@
               "kind": "AzureCLI",
               "properties": {
                 "azCliVersion": "2.52.0",
-                "scriptContent": "[format('wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name {0} --sas-token \"{1}\" --container-name {2} --name functionApp.zip --type block --file functionApp.zip --overwrite true', parameters('storageAccountName'), listAccountSas(parameters('storageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('blobContainerName'))]",
+                "scriptContent": "[format('wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name {0} --sas-token \"{1}\" --container-name {2} --name functionApp.zip --type block --file functionApp.zip --overwrite true && wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/ffmpegscript.sh -O ffmpegscript.sh && az storage file upload --account-name {3} --sas-token \"{4}\" --share-name {5} --source ffmpegscript.sh --name ffmpegscript.sh ', parameters('functionAppStorageAccountName'), listAccountSas(parameters('storageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('blobContainerName'), parameters('storageAccountName'), listAccountSas(parameters('storageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('fileShareName'))]",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"
               }
