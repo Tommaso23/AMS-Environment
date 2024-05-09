@@ -1,6 +1,4 @@
-param location string = resourceGroup().location
-
-
+var location = resourceGroup().location
 var uniqueId = take(uniqueString(subscription().subscriptionId, resourceGroup().id), 7)
 var storageAccountName = 'stmediaservices${uniqueId}'
 var functionAppStorageAccountName = 'stmediaservicesfa${uniqueId}'
@@ -24,9 +22,9 @@ var sqlcontainerPresetsName = 'EncoderPresets'
 var containerInstanceContributorRoleActions = [
   'Microsoft.ContainerInstance/*'
 ]
-param containerInstanceContributorRoleNotActions array = []
-param containerInstanceContributorRoleName string = 'Custom - Container Instance Contributor'
-param containerInstanceContributorRoleDescription string = 'Custom role to manage container instances'
+var containerInstanceContributorRoleNotActions = []
+var containerInstanceContributorRoleName = 'Custom - Container Instance Contributor'
+var containerInstanceContributorRoleDescription = 'Custom role to manage container instances'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
 var appSettings = [
   {
