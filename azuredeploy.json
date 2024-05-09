@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "14574747878663868618"
+      "templateHash": "11991996250816517341"
     }
   },
   "variables": {
@@ -22,7 +22,7 @@
     "functionappAppServicePlanName": "[format('asp-mediaservices-{0}', variables('uniqueId'))]",
     "applicationInsightsName": "[format('appi-mediaservices-{0}', variables('uniqueId'))]",
     "deploymentScriptName": "[format('depfunczip-mediaservices-{0}', variables('uniqueId'))]",
-    "containerInstanceContributorRoleDefName": "[guid(variables('containerInstanceContributorRoleName'))]",
+    "containerInstanceContributorRoleDefName": "[guid(subscription().id, resourceGroup().id, variables('containerInstanceContributorRoleName'))]",
     "fileShareName": "assets-share",
     "scriptShareName": "script-share",
     "queueName": "encoderjobs-queue",
