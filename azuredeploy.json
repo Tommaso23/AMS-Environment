@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "11849745761404352218"
+      "templateHash": "14574747878663868618"
     }
   },
   "variables": {
@@ -34,6 +34,9 @@
       "Microsoft.ContainerInstance/*"
     ],
     "containerInstanceContributorRoleNotActions": [],
+    "assignableScope": [
+      "[resourceGroup().id]"
+    ],
     "containerInstanceContributorRoleName": "Custom - Container Instance Contributor",
     "containerInstanceContributorRoleDescription": "Custom role to manage container instances",
     "containerInstanceName": "[format('ci-mediaservices-{0}', variables('uniqueId'))]",
@@ -873,6 +876,9 @@
           },
           "roleDefName": {
             "value": "[variables('containerInstanceContributorRoleDefName')]"
+          },
+          "assignableScopes": {
+            "value": "[variables('assignableScope')]"
           }
         },
         "template": {
@@ -882,7 +888,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "8145801796417520934"
+              "templateHash": "4793468021930648598"
             }
           },
           "parameters": {
@@ -899,6 +905,9 @@
               "type": "array"
             },
             "notActions": {
+              "type": "array"
+            },
+            "assignableScopes": {
               "type": "array"
             }
           },
@@ -917,9 +926,7 @@
                     "notActions": "[parameters('notActions')]"
                   }
                 ],
-                "assignableScopes": [
-                  "[resourceGroup().id]"
-                ]
+                "assignableScopes": "[parameters('assignableScopes')]"
               }
             }
           ],
