@@ -177,7 +177,9 @@ module deploymentScript 'modules/deploymentScript.bicep' = {
   params: {
     location: location
     deploymentScriptName: deploymentScriptName
-    storageAccountName: functionAppStorageAccountName
+    storageAccountName: storageAccountName
+    functionAppStorageAccountName: functionAppStorageAccountName
+    fileShareName: scriptShareName
     storageAccountId: functionAppStorageAccount.outputs.storageAccountId
     storageAccountApiVersion: functionAppStorageAccount.outputs.storageAccountApiVersion
     blobContainerName: functionAppBlobContainerName
