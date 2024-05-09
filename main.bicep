@@ -233,7 +233,7 @@ module functionApp 'modules/functionapp.bicep' = {
 }
 
 module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
-  name: 'functionRoleAssignment'
+  name: 'functionStorageRoleAssignment'
   params: {
     roleDefinitionId: storageBlobReaderRoleDefinitionId
     principalId: functionApp.outputs.principalId
