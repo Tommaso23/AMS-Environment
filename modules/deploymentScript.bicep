@@ -1,4 +1,5 @@
 param location string
+param deploymentScriptName string
 param storageAccountName string
 param blobContainerName string
 param storageAccountId string
@@ -17,7 +18,7 @@ var sasDefinition = {
 var sasToken = listAccountSas(storageAccountId, storageAccountApiVersion, sasDefinition).accountSasToken
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: 'uploadFile'
+  name: deploymentScriptName
   location: location
   kind: 'AzureCLI'
   properties: {

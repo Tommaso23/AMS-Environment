@@ -7,7 +7,7 @@ param queueName string = 'encoderjobs-queue'
 param sqlcontainerJobsName string = 'EncoderJobs'
 param sqlcontainerPresetsName string = 'EncoderPresets'
 
-var uniqueId = take(uniqueString(subscription().subscriptionId), 7)
+var uniqueId = take(uniqueString(subscription().subscriptionId, resourceGroup().id), 7)
 var storageAccountName = 'stmediaservices${uniqueId}'
 var functionAppStorageAccountName = 'stmediaservicesfa${uniqueId}'
 var cosmosdbaccountName = 'cosmos-mediaservices-${uniqueId}'
@@ -18,6 +18,7 @@ var functionappName = 'func-mediaservices-${uniqueId}'
 var logAnalyticsWorkspaceName = 'log-mediaservices-${uniqueId}'
 var functionappAppServicePlanName = 'asp-mediaservices-${uniqueId}'
 var applicationInsightsName = 'appi-mediaservices-${uniqueId}'
+var deploymentScriptName = 'depfunczip-mediaservices-${uniqueId}'
 var appSettings = [
 
   {
@@ -170,6 +171,7 @@ module deploymentScript 'modules/deploymentScript.bicep' = {
   name: 'deploymentScript'
   params: {
     location: location
+    deploymentScriptName: deploymentScriptName
     storageAccountName: functionAppStorageAccountName
     storageAccountId: functionAppStorageAccount.outputs.storageAccountId
     storageAccountApiVersion: functionAppStorageAccount.outputs.storageAccountApiVersion
