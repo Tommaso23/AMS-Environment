@@ -6,6 +6,12 @@ param functionAppBlobContainerName string = 'code-storage-container'
 param queueName string = 'encoderjobs-queue'
 param sqlcontainerJobsName string = 'EncoderJobs'
 param sqlcontainerPresetsName string = 'EncoderPresets'
+param containerInstanceContributorRoleActions array = [
+  'Microsoft.ContainerInstance/*'
+]
+param containerInstanceContributorRoleNotActions array = []
+param containerInstanceContributorRoleName string = 'Custom - Container Instance Contributor'
+param containerInstanceContributorRoleDescription string = 'Custom role to manage container instances'
 
 var uniqueId = take(uniqueString(subscription().subscriptionId, resourceGroup().id), 7)
 var storageAccountName = 'stmediaservices${uniqueId}'
@@ -19,6 +25,7 @@ var logAnalyticsWorkspaceName = 'log-mediaservices-${uniqueId}'
 var functionappAppServicePlanName = 'asp-mediaservices-${uniqueId}'
 var applicationInsightsName = 'appi-mediaservices-${uniqueId}'
 var deploymentScriptName = 'depfunczip-mediaservices-${uniqueId}'
+var containerInstanceContributorRoleDefName = guid(containerInstanceContributorRoleName)
 var appSettings = [
 
   {
@@ -232,7 +239,18 @@ module functionApp 'modules/functionapp.bicep' = {
   ]
 }
 
-module functionRoleAssignment 'modules/roleassignment.bicep' = {
+module functionContainerRoleDefinition 'modules/rbacroledefinition.bicep' = {
+  name: 'functionContainerRoleDefinition'
+  params: {
+    roleName: containerInstanceContributorRoleName
+    roleDescription: containerInstanceContributorRoleDescription
+    actions: containerInstanceContributorRoleActions
+    notActions: containerInstanceContributorRoleNotActions
+    roleDefName: containerInstanceContributorRoleDefName
+  }
+}
+
+module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
   name: 'functionRoleAssignment'
   params: {
     roleDefinitionId: storageBlobReaderRoleDefinitionId
@@ -242,6 +260,14 @@ module functionRoleAssignment 'modules/roleassignment.bicep' = {
     functionApp
     deploymentScript
   ]
+}
+
+module functionContainerRoleAssignment 'modules/roleassignment.bicep' = {
+  name: 'functionContainerRoleAssignment'
+  params: {
+    roleDefinitionId: functionContainerRoleDefinition.outputs.roleDefinitionId
+    principalId: functionApp.outputs.principalId
+  }
 }
 
 //create app service plan
