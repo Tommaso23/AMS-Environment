@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "10567841451589258013"
+      "templateHash": "16903685119646114282"
     }
   },
   "variables": {
@@ -64,7 +64,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "17752356411561705466"
+              "templateHash": "17802126737746606755"
             }
           },
           "parameters": {
@@ -78,7 +78,7 @@
           "resources": [
             {
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2023-04-01",
               "name": "[parameters('storageAccountName')]",
               "location": "[parameters('location')]",
               "tags": {
@@ -121,7 +121,7 @@
           "outputs": {
             "blobEndpoint": {
               "type": "string",
-              "value": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, 'https://', ''), '/', '')]"
+              "value": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-04-01').primaryEndpoints.blob, 'https://', ''), '/', '')]"
             },
             "storageAccountId": {
               "type": "string",
@@ -129,11 +129,11 @@
             },
             "storageAccountKey": {
               "type": "string",
-              "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value]"
+              "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-04-01').keys[0].value]"
             },
             "storageAccountApiVersion": {
               "type": "string",
-              "value": "2023-01-01"
+              "value": "2023-04-01"
             }
           }
         }
@@ -163,7 +163,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "17752356411561705466"
+              "templateHash": "17802126737746606755"
             }
           },
           "parameters": {
@@ -177,7 +177,7 @@
           "resources": [
             {
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2023-04-01",
               "name": "[parameters('storageAccountName')]",
               "location": "[parameters('location')]",
               "tags": {
@@ -220,7 +220,7 @@
           "outputs": {
             "blobEndpoint": {
               "type": "string",
-              "value": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, 'https://', ''), '/', '')]"
+              "value": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-04-01').primaryEndpoints.blob, 'https://', ''), '/', '')]"
             },
             "storageAccountId": {
               "type": "string",
@@ -228,11 +228,11 @@
             },
             "storageAccountKey": {
               "type": "string",
-              "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value]"
+              "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-04-01').keys[0].value]"
             },
             "storageAccountApiVersion": {
               "type": "string",
-              "value": "2023-01-01"
+              "value": "2023-04-01"
             }
           }
         }
@@ -389,7 +389,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "2357356379821164315"
+              "templateHash": "5106680744479928031"
             }
           },
           "parameters": {
@@ -418,8 +418,7 @@
               "type": "string"
             },
             "storageAccountApiVersion": {
-              "type": "string",
-              "defaultValue": "2023-05-01"
+              "type": "string"
             },
             "currentTime": {
               "type": "string",
