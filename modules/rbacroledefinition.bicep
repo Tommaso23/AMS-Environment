@@ -1,3 +1,5 @@
+targetScope = 'resourceGroup'
+
 param roleDefName string
 param roleName string
 param roleDescription string
