@@ -8,7 +8,7 @@ param functionAppStorageAccountId string
 
 param blobContainerName string
 param fileShareName string
-param storageAccountApiVersion string = '2023-05-01'
+param storageAccountApiVersion string
 param currentTime string = utcNow('u')
 
 var sasDefinition = {
