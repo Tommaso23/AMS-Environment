@@ -11,7 +11,7 @@ var logAnalyticsWorkspaceName = 'log-mediaservices-${uniqueId}'
 var functionappAppServicePlanName = 'asp-mediaservices-${uniqueId}'
 var applicationInsightsName = 'appi-mediaservices-${uniqueId}'
 var deploymentScriptName = 'depfunczip-mediaservices-${uniqueId}'
-var containerInstanceContributorRoleDefName = guid(subscription().id, resourceGroup().id, containerInstanceContributorRoleName)
+var containerInstanceContributorRoleDefName = guid(subscription().id, containerInstanceContributorRoleName)
 var fileShareName = 'assets-share'
 var scriptShareName = 'script-share'
 var queueName = 'encoderjobs-queue'
@@ -24,9 +24,9 @@ var containerInstanceContributorRoleActions = [
 ]
 var containerInstanceContributorRoleNotActions = []
 var assignableScope = [
-  resourceGroup().id
+  subscription().subscriptionId
 ]
-var containerInstanceContributorRoleName = 'Custom - Container Instances Contributor'
+var containerInstanceContributorRoleName = 'CUSTOM MEDIA SERVICES - Container Instances Contributor'
 var containerInstanceContributorRoleDescription = 'Custom role to manage container instances'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
 var appSettings = [
