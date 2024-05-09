@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "11991996250816517341"
+      "templateHash": "12983433543147331361"
     }
   },
   "variables": {
@@ -37,7 +37,7 @@
     "assignableScope": [
       "[resourceGroup().id]"
     ],
-    "containerInstanceContributorRoleName": "Custom - Container Instance Contributor",
+    "containerInstanceContributorRoleName": "Custom - Container Instances Contributor",
     "containerInstanceContributorRoleDescription": "Custom role to manage container instances",
     "containerInstanceName": "[format('ci-mediaservices-{0}', variables('uniqueId'))]",
     "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]"
