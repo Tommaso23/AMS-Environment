@@ -23,6 +23,9 @@ var containerInstanceContributorRoleActions = [
   'Microsoft.ContainerInstance/*'
 ]
 var containerInstanceContributorRoleNotActions = []
+var assignableScope = [
+  resourceGroup().id
+]
 var containerInstanceContributorRoleName = 'Custom - Container Instance Contributor'
 var containerInstanceContributorRoleDescription = 'Custom role to manage container instances'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
@@ -246,6 +249,7 @@ module functionContainerRoleDefinition 'modules/rbacroledefinition.bicep' = {
     actions: containerInstanceContributorRoleActions
     notActions: containerInstanceContributorRoleNotActions
     roleDefName: containerInstanceContributorRoleDefName
+    assignableScopes: assignableScope
   }
 }
 

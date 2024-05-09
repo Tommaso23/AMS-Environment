@@ -1,10 +1,9 @@
-targetScope = 'resourceGroup'
-
 param roleDefName string
 param roleName string
 param roleDescription string
 param actions array
 param notActions array
+param assignableScopes array
 
 resource roleDef 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
   name: roleDefName
@@ -18,9 +17,7 @@ resource roleDef 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
         notActions: notActions
       }
     ]
-    assignableScopes: [
-      resourceGroup().id
-    ]
+    assignableScopes: assignableScopes
   }
 }
 
