@@ -78,6 +78,10 @@ var appSettings = [
     value: storageAccount.outputs.storageAccountKey
   }
   {
+    name: 'STORAGE_ACCOUNT_NAME'
+    value: storageAccountName
+  }
+  {
     name: 'SUBSCRIPTION_ID'
     value: subscription().subscriptionId
   }
