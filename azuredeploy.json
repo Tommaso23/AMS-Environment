@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "9779290931170741189"
+      "templateHash": "17757857282168246444"
     }
   },
   "variables": {
@@ -703,6 +703,10 @@
               {
                 "name": "STORAGE_ACCOUNT_KEY",
                 "value": "[reference(resourceId('Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').outputs.storageAccountKey.value]"
+              },
+              {
+                "name": "STORAGE_ACCOUNT_NAME",
+                "value": "[variables('storageAccountName')]"
               },
               {
                 "name": "SUBSCRIPTION_ID",
