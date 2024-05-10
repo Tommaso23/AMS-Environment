@@ -59,7 +59,8 @@ var appSettings = [
   }
   {
     name: 'FA_STORAGE_ACCOUNT_NAME'
-    value: functionappName
+    value: functionAppStorageAccountName
+
   }
   {
     name: 'FA_STORAGE_ENCODERJOBS_QUEUE_NAME'
