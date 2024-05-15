@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12454521623433995256"
+      "templateHash": "3251946219701870257"
     }
   },
   "variables": {
@@ -383,7 +383,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "9239032995479909429"
+              "templateHash": "15237696920737926683"
             }
           },
           "parameters": {
@@ -446,7 +446,7 @@
               "kind": "AzureCLI",
               "properties": {
                 "azCliVersion": "2.52.0",
-                "scriptContent": "[format('wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name {0} --sas-token \"{1}\" --container-name {2} --name functionApp.zip --type block --file functionApp.zip --overwrite true && wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/ffmpegscript.sh -O ffmpegscript.sh && az storage file upload --account-name {3} --sas-token \"{4}\" --share-name {5} --source ffmpegscript.sh', parameters('functionAppStorageAccountName'), listAccountSas(parameters('functionAppStorageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('blobContainerName'), parameters('storageAccountName'), listAccountSas(parameters('storageAccountId'), parameters('storageAccountApiVersion'), variables('fileSasDefinition')).accountSasToken, parameters('fileShareName'))]",
+                "scriptContent": "[format('wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name {0} --sas-token \"{1}\" --container-name {2} --name functionApp.zip --type block --file functionApp.zip --overwrite true && wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/ffmpegscript.sh -O ffmpegscript.sh && az storage file upload --account-name {3} --sas-token \"{4}\" --share-name {5} --source ffmpegscript.sh && az storage blob generate-sas --account-name {6}', parameters('functionAppStorageAccountName'), listAccountSas(parameters('functionAppStorageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('blobContainerName'), parameters('storageAccountName'), listAccountSas(parameters('storageAccountId'), parameters('storageAccountApiVersion'), variables('fileSasDefinition')).accountSasToken, parameters('fileShareName'), parameters('functionAppStorageAccountName'))]",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"
               }
@@ -455,7 +455,7 @@
           "outputs": {
             "blobUrl": {
               "type": "string",
-              "value": "[format('https://{0}.blob.core.windows.net/{1}/functionApp.zip', parameters('storageAccountName'), parameters('blobContainerName'))]"
+              "value": "[format('https://{0}.blob.core.windows.net/{1}/functionApp.zip', parameters('functionAppStorageAccountName'), parameters('blobContainerName'))]"
             }
           }
         }
