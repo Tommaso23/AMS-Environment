@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "17757857282168246444"
+      "templateHash": "12454521623433995256"
     }
   },
   "variables": {
@@ -686,7 +686,7 @@
               },
               {
                 "name": "FA_STORAGE_ACCOUNT_NAME",
-                "value": "[variables('functionappName')]"
+                "value": "[variables('functionAppStorageAccountName')]"
               },
               {
                 "name": "FA_STORAGE_ENCODERJOBS_QUEUE_NAME",
