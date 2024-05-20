@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12817814209711205384"
+      "templateHash": "7694179570138396677"
     }
   },
   "variables": {
@@ -30,6 +30,7 @@
     "sqlcontainerJobsName": "EncoderJobs",
     "sqlcontainerPresetsName": "EncoderPresets",
     "containerInstanceName": "[format('ci-mediaservices-{0}', variables('uniqueId'))]",
+    "loadPresetDeploymentScriptName": "[format('loadpredep-mediaservices-{0}', variables('uniqueId'))]",
     "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
     "contributorRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
   },
@@ -1802,6 +1803,71 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'logAnalytics')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "loadPresetDeploymentScript",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "deploymentScriptName": {
+            "value": "[variables('loadPresetDeploymentScriptName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "functionAppName": {
+            "value": "[variables('functionappName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.27.1.19265",
+              "templateHash": "8458540612753496988"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "deploymentScriptName": {
+              "type": "string"
+            },
+            "functionAppName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "functionAppUrl": "[format('https://{0}.azurewebsites.net/api/encoderpresets/create?', parameters('functionAppName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2023-08-01",
+              "name": "[parameters('deploymentScriptName')]",
+              "location": "[parameters('location')]",
+              "kind": "AzureCLI",
+              "properties": {
+                "azCliVersion": "2.52.0",
+                "scriptContent": "[format('#!/bin/bash echo \"Sleeping for 60 seconds\" sleep 60 curl -X POST {0} -H \"Content-Type:application/json\" --data \"{{\"Name\": \"DeploymentTry\", \"Description\": \"libx264 encoding at 1280x720 resolution\", \"PresetParameters\": \"-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd\"}}\"', variables('functionAppUrl'))]",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'functionApp')]"
       ]
     }
   ]
