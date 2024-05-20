@@ -19,6 +19,7 @@ var functionAppBlobContainerName = 'code-storage-container'
 var sqlcontainerJobsName = 'EncoderJobs'
 var sqlcontainerPresetsName = 'EncoderPresets'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
+var loadPresetDeploymentScriptName = 'loadpredep-mediaservices-${uniqueId}'
 var appSettings = [
   {
     name: 'AzureWebJobsStorage'
@@ -369,4 +370,16 @@ module applicationInsights 'modules/applicationInsights.bicep' = {
     applicationInsightsName: applicationInsightsName
     workspaceId: logAnalytics.outputs.logAnlayticsWorkspaceId
   }
+}
+
+module loadPresetDeploymentScript 'modules/loadPresetdeploymentScript.bicep' = {
+  name: 'loadPresetDeploymentScript'
+  params: {
+    deploymentScriptName: loadPresetDeploymentScriptName
+    location: location
+    functionAppName: functionappName
+  }
+  dependsOn: [
+    functionApp
+  ]
 }
