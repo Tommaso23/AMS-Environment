@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "7694179570138396677"
+      "templateHash": "11439594300531801465"
     }
   },
   "variables": {
@@ -1832,7 +1832,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "8458540612753496988"
+              "templateHash": "7372060042773571838"
             }
           },
           "parameters": {
@@ -1858,7 +1858,7 @@
               "kind": "AzureCLI",
               "properties": {
                 "azCliVersion": "2.52.0",
-                "scriptContent": "[format('#!/bin/bash echo \"Sleeping for 60 seconds\" sleep 60 curl -X POST {0} -H \"Content-Type:application/json\" --data \"{{\"Name\": \"DeploymentTry\", \"Description\": \"libx264 encoding at 1280x720 resolution\", \"PresetParameters\": \"-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd\"}}\"', variables('functionAppUrl'))]",
+                "scriptContent": "[format('sleep 40 && curl -X POST {0} -H \"Content-Type:application/json\" --data \"{{\"Name\": \"TestDepl2\", \"Description\": \"libx264 encoding at 1280x720 resolution\", \"PresetParameters\": \"-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd\"}}\"', variables('functionAppUrl'))]",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"
               }
