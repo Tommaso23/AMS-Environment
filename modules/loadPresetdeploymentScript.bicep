@@ -9,7 +9,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   kind: 'AzureCLI'
   properties: {
     azCliVersion: '2.52.0'
-    scriptContent: '#!/bin/bash echo "Sleeping for 60 seconds" sleep 60 curl -X POST ${functionAppUrl} -H "Content-Type:application/json" --data "{"Name": "DeploymentTry", "Description": "libx264 encoding at 1280x720 resolution", "PresetParameters": "-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd"}"'
+    scriptContent: 'sleep 40 && curl -X POST ${functionAppUrl} -H "Content-Type:application/json" --data "{"Name": "TestDepl2", "Description": "libx264 encoding at 1280x720 resolution", "PresetParameters": "-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd"}"'
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
   }
