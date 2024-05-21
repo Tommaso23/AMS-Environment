@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6971672055292645900"
+      "templateHash": "8115804761118368437"
     }
   },
   "variables": {
@@ -693,7 +693,10 @@
             }
           ]
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'storageAccount')]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
