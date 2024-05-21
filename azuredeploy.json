@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12784899235786363572"
+      "templateHash": "6971672055292645900"
     }
   },
   "variables": {
@@ -25,6 +25,7 @@
     "fileShareName": "assets-share",
     "scriptShareName": "script-share",
     "queueName": "encoderjobs-queue",
+    "blobServiceName": "default",
     "blobContainerName": "assets-storage-container",
     "functionAppBlobContainerName": "code-storage-container",
     "sqlcontainerJobsName": "EncoderJobs",
@@ -627,6 +628,72 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'storageAccount')]"
       ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "blobService",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "blobServiceName": {
+            "value": "[variables('blobServiceName')]"
+          },
+          "storageAccountName": {
+            "value": "[variables('storageAccountName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.27.1.19265",
+              "templateHash": "12783903071352543283"
+            }
+          },
+          "parameters": {
+            "blobServiceName": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]",
+              "properties": {
+                "cors": {
+                  "corsRules": [
+                    {
+                      "allowedHeaders": [
+                        ""
+                      ],
+                      "allowedMethods": [
+                        "GET",
+                        "POST",
+                        "PUT"
+                      ],
+                      "allowedOrigins": [
+                        "*"
+                      ],
+                      "exposedHeaders": [],
+                      "maxAgeInSeconds": 20
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
