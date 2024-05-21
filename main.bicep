@@ -231,6 +231,9 @@ module blobService 'modules/blobServices.bicep' = {
     blobServiceName: blobServiceName
     storageAccountName: storageAccountName
   }
+  dependsOn: [
+    storageAccount
+  ]
 }
 // create function app
 module functionApp 'modules/functionapp.bicep' = {
