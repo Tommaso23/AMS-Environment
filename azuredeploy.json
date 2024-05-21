@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "11563992309364946960"
+      "templateHash": "12784899235786363572"
     }
   },
   "variables": {
@@ -1832,7 +1832,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "7495949980255326351"
+              "templateHash": "7783398123937145456"
             }
           },
           "parameters": {
@@ -1855,7 +1855,7 @@
               "kind": "AzureCLI",
               "properties": {
                 "azCliVersion": "2.52.0",
-                "scriptContent": "[format('sleep 40 && echo {0} && curl -X POST https://{1}.azurewebsites.net/api/encoderpresets/create? -H \"Content-Type:application/json\" --data \"{{\"Name\": \"TestDepl2\", \"Description\": \"libx264 encoding at 1280x720 resolution\", \"PresetParameters\": \"-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd\"}}\"', parameters('functionAppName'), parameters('functionAppName'))]",
+                "scriptContent": "[format('sleep 30 && curl -X POST https://{0}.azurewebsites.net/api/encoderpresets/create? -H \"Content-Type:application/json\" --data ''{{\"Name\": \"TestDepl2\", \"Description\": \"libx264 encoding at 1280x720 resolution\", \"PresetParameters\": \"-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd\"}}''', parameters('functionAppName'))]",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"
               }
