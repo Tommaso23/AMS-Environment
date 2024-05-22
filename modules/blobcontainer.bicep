@@ -10,6 +10,6 @@ resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/container
     }
     defaultEncryptionScope: '$account-encryption-key'
     denyEncryptionScopeOverride: false
-    //publicAccess: 'Container'
+    publicAccess: 'Blob'
   }
 }

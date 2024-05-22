@@ -1,5 +1,6 @@
 param storageAccountName string
 param location string 
+param isPublicAccessible bool
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
   name: storageAccountName
@@ -16,7 +17,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
     defaultToOAuthAuthentication: false
     allowCrossTenantReplication: false
     minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
+    allowBlobPublicAccess: isPublicAccessible
     allowSharedKeyAccess: true
     networkAcls: {
       bypass: 'AzureServices'

@@ -133,6 +133,7 @@ module storageAccount 'modules/storageaccount.bicep' = {
   params: {
     location: location
     storageAccountName: storageAccountName
+    isPublicAccessible: true
   }
 }
 
@@ -142,6 +143,7 @@ module functionAppStorageAccount 'modules/storageaccount.bicep'= {
   params: {
     location: location
     storageAccountName: functionAppStorageAccountName
+    isPublicAccessible: false
   }
 }
 
