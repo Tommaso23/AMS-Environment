@@ -14,6 +14,7 @@ var deploymentScriptName = 'depfunczip-mediaservices-${uniqueId}'
 var fileShareName = 'assets-share'
 var scriptShareName = 'script-share'
 var queueName = 'encoderjobs-queue'
+var blobServiceName = 'default'
 var blobContainerName = 'assets-storage-container'
 var functionAppBlobContainerName = 'code-storage-container'
 var sqlcontainerJobsName = 'EncoderJobs'
@@ -226,6 +227,16 @@ module blobContainer 'modules/blobcontainer.bicep' = {
   ]
 }
 
+module blobService 'modules/blobServices.bicep' = {
+  name: 'blobService'
+  params: {
+    blobServiceName: blobServiceName
+    storageAccountName: storageAccountName
+  }
+  dependsOn: [
+    storageAccount
+  ]
+}
 // create function app
 module functionApp 'modules/functionapp.bicep' = {
   name: 'functionApp'
