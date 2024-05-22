@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "8115804761118368437"
+      "templateHash": "11963326804740396877"
     }
   },
   "variables": {
@@ -51,6 +51,9 @@
           },
           "storageAccountName": {
             "value": "[variables('storageAccountName')]"
+          },
+          "isPublicAccessible": {
+            "value": true
           }
         },
         "template": {
@@ -60,7 +63,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "17802126737746606755"
+              "templateHash": "12735077790422948816"
             }
           },
           "parameters": {
@@ -69,6 +72,9 @@
             },
             "location": {
               "type": "string"
+            },
+            "isPublicAccessible": {
+              "type": "bool"
             }
           },
           "resources": [
@@ -88,7 +94,7 @@
                 "defaultToOAuthAuthentication": false,
                 "allowCrossTenantReplication": false,
                 "minimumTlsVersion": "TLS1_2",
-                "allowBlobPublicAccess": false,
+                "allowBlobPublicAccess": "[parameters('isPublicAccessible')]",
                 "allowSharedKeyAccess": true,
                 "networkAcls": {
                   "bypass": "AzureServices",
@@ -150,6 +156,9 @@
           },
           "storageAccountName": {
             "value": "[variables('functionAppStorageAccountName')]"
+          },
+          "isPublicAccessible": {
+            "value": false
           }
         },
         "template": {
@@ -159,7 +168,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "17802126737746606755"
+              "templateHash": "12735077790422948816"
             }
           },
           "parameters": {
@@ -168,6 +177,9 @@
             },
             "location": {
               "type": "string"
+            },
+            "isPublicAccessible": {
+              "type": "bool"
             }
           },
           "resources": [
@@ -187,7 +199,7 @@
                 "defaultToOAuthAuthentication": false,
                 "allowCrossTenantReplication": false,
                 "minimumTlsVersion": "TLS1_2",
-                "allowBlobPublicAccess": false,
+                "allowBlobPublicAccess": "[parameters('isPublicAccessible')]",
                 "allowSharedKeyAccess": true,
                 "networkAcls": {
                   "bypass": "AzureServices",
@@ -258,7 +270,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "2332504029245951871"
+              "templateHash": "18234057900597424506"
             }
           },
           "parameters": {
@@ -279,7 +291,8 @@
                   "enabled": false
                 },
                 "defaultEncryptionScope": "$account-encryption-key",
-                "denyEncryptionScopeOverride": false
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "Blob"
               }
             }
           ]
@@ -598,7 +611,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "2332504029245951871"
+              "templateHash": "18234057900597424506"
             }
           },
           "parameters": {
@@ -619,7 +632,8 @@
                   "enabled": false
                 },
                 "defaultEncryptionScope": "$account-encryption-key",
-                "denyEncryptionScopeOverride": false
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "Blob"
               }
             }
           ]
