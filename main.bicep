@@ -7,6 +7,7 @@ var cosmosdbsqldatabaseName = 'cossql-mediaservices-${uniqueId}'
 var cdnProfileName = 'cdn-mediaservices-${uniqueId}'
 var cdnEndpointName = 'cdne-mediaservices-${uniqueId}'
 var functionappName = 'func-mediaservices-${uniqueId}'
+var webAppName = 'wa-mediaservices-${uniqueId}'
 var logAnalyticsWorkspaceName = 'log-mediaservices-${uniqueId}'
 var functionappAppServicePlanName = 'asp-mediaservices-${uniqueId}'
 var applicationInsightsName = 'appi-mediaservices-${uniqueId}'
@@ -21,6 +22,23 @@ var sqlcontainerJobsName = 'EncoderJobs'
 var sqlcontainerPresetsName = 'EncoderPresets'
 var containerInstanceName = 'ci-mediaservices-${uniqueId}'
 var loadPresetDeploymentScriptName = 'loadpredep-mediaservices-${uniqueId}'
+var webAppSettings = [
+  {
+    name: 'ENCODER_ASSETS_STORAGE_CONTAINER_NAME'
+    value: blobContainerName 
+  }
+  {
+    name: 'XDT_MicrosoftApplicationInsights_Mode'
+    value: 'Recommended'
+  }
+  {
+    name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
+    value: '~3'
+  }
+  {
+
+  }
+]
 var appSettings = [
   {
     name: 'AzureWebJobsStorage'
@@ -172,6 +190,7 @@ module queue 'modules/queue.bicep' = {
     functionAppStorageAccount
   ]
 }
+
 // create ddeployment script
 module deploymentScript 'modules/deploymentScript.bicep' = {
   name: 'deploymentScript'
@@ -251,6 +270,20 @@ module functionApp 'modules/functionapp.bicep' = {
   ]
 }
 
+//create web app
+module webApp 'modules/webApp.bicep' = {
+  name: 'webApp'
+  params: {
+    location: location
+    webAppName: webAppName
+    serverFarmId: functionappAppServicePlanName
+    webAppSettings: webAppSettings
+  }
+  dependsOn: [
+    deploymentScript
+  ]
+}
+//assign storage blob reader to functionApp
 module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
   name: 'functionStorageRoleAssignment'
   params: {
@@ -263,6 +296,7 @@ module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
   ]
 }
 
+//assign contributor role to functionApp
 module functionContainerRoleAssignment 'modules/roleassignment.bicep' = {
   name: 'functionContainerRoleAssignment'
   params: {
@@ -270,6 +304,17 @@ module functionContainerRoleAssignment 'modules/roleassignment.bicep' = {
     principalId: functionApp.outputs.principalId
   }
 }
+
+//assign contributor role to webApp
+module webappContainerRoleAssignment 'modules/roleassignment.bicep' = {
+  name: 'webappContainerRoleAssignment'
+  params: {
+    roleDefinitionId: contributorRoleDefinitionId
+    principalId: webApp.outputs.principalId
+  }
+}
+
+
 
 //create app service plan
 module appServicePlan 'modules/appServicePlan.bicep' = {
