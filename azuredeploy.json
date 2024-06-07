@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5584261220008089890"
+      "templateHash": "2862528710772067373"
     }
   },
   "variables": {
@@ -46,7 +46,10 @@
         "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
         "value": "~3"
       },
-      {}
+      {
+        "name": "WEBSITE_CONTENTSHARE",
+        "value": "[format('https://{0}.azurewebsites.net', toLower(variables('functionappName')))]"
+      }
     ],
     "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
     "contributorRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
@@ -1971,7 +1974,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "17284323646487914688"
+              "templateHash": "16122033718692419101"
             }
           },
           "parameters": {
@@ -2005,7 +2008,7 @@
             }
           ],
           "outputs": {
-            "logAnlayticsWorkspaceId": {
+            "logAnalyticsWorkspaceId": {
               "type": "string",
               "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
             }
@@ -2030,7 +2033,7 @@
             "value": "[variables('applicationInsightsName')]"
           },
           "workspaceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'logAnalytics'), '2022-09-01').outputs.logAnlayticsWorkspaceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'logAnalytics'), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
