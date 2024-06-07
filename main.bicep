@@ -35,10 +35,12 @@ var webAppSettings = [
     name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
     value: '~3'
   }
+  /*
   {
-    name: 'WEBSITE_CONTENTSHARE'
+    name: 'WEBSITE_URL'
     value: 'https://${toLower(functionappName)}.azurewebsites.net'
   }
+    */
 ]
 var appSettings = [
   {
