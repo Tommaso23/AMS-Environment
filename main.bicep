@@ -163,7 +163,7 @@ module functionAppStorageAccount 'modules/storageaccount.bicep'= {
   params: {
     location: location
     storageAccountName: functionAppStorageAccountName
-    isPublicAccessible: false
+    isPublicAccessible: true //TODO: Modify it to False
   }
 }
 
