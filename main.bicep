@@ -36,7 +36,8 @@ var webAppSettings = [
     value: '~3'
   }
   {
-
+    name: 'WEBSITE_CONTENTSHARE'
+    value: 'https://${toLower(functionappName)}.azurewebsites.net'
   }
 ]
 var appSettings = [
@@ -283,6 +284,7 @@ module webApp 'modules/webApp.bicep' = {
     deploymentScript
   ]
 }
+
 //assign storage blob reader to functionApp
 module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
   name: 'functionStorageRoleAssignment'
@@ -421,14 +423,16 @@ module logAnalytics 'modules/logAnalytics.bicep' = {
   }
 }
 
+
 module applicationInsights 'modules/applicationInsights.bicep' = {
   name: 'applicationInsights'
   params: {
     location: location
     applicationInsightsName: applicationInsightsName
-    workspaceId: logAnalytics.outputs.logAnlayticsWorkspaceId
+    workspaceId: logAnalytics.outputs.logAnalyticsWorkspaceId
   }
 }
+
 
 module loadPresetDeploymentScript 'modules/loadPresetdeploymentScript.bicep' = {
   name: 'loadPresetDeploymentScript'
