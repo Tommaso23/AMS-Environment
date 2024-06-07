@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13457204187491876998"
+      "templateHash": "11542888900665795690"
     }
   },
   "variables": {
@@ -45,10 +45,6 @@
       {
         "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
         "value": "~3"
-      },
-      {
-        "name": "WEBSITE_CONTENTSHARE",
-        "value": "[format('https://{0}.azurewebsites.net', toLower(variables('functionappName')))]"
       }
     ],
     "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
