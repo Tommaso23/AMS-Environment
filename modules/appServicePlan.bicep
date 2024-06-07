@@ -5,13 +5,9 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: functionappAppServicePlanName
   location: location
   sku: {
-    name: 'Y1'
-    tier: 'Dynamic'
-    size: 'Y1'
-    family: 'Y'
-    capacity: 0
+    name: 'B1'
   }
-  kind: 'functionapp'
+  kind: 'linux'
   properties: {
     perSiteScaling: false
     elasticScaleEnabled: false
