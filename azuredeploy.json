@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11542888900665795690"
+      "templateHash": "4344067329854989465"
     }
   },
   "variables": {
@@ -1258,7 +1258,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "13603543340725094313"
+              "templateHash": "7606273615610942175"
             }
           },
           "parameters": {
@@ -1276,13 +1276,9 @@
               "name": "[parameters('functionappAppServicePlanName')]",
               "location": "[parameters('location')]",
               "sku": {
-                "name": "Y1",
-                "tier": "Dynamic",
-                "size": "Y1",
-                "family": "Y",
-                "capacity": 0
+                "name": "B1"
               },
-              "kind": "functionapp",
+              "kind": "linux",
               "properties": {
                 "perSiteScaling": false,
                 "elasticScaleEnabled": false,
