@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7546998651824509869"
+      "templateHash": "17143397839018753662"
     }
   },
   "variables": {
@@ -417,7 +417,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "14151928096061104188"
+              "templateHash": "17312538801843220339"
             }
           },
           "parameters": {
@@ -480,7 +480,7 @@
               "kind": "AzureCLI",
               "properties": {
                 "azCliVersion": "2.52.0",
-                "scriptContent": "[format('wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name {0} --sas-token \"{1}\" --container-name {2} --name functionApp.zip --type block --file functionApp.zip --overwrite true && wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/ffmpegscript.sh -O ffmpegscript.sh && az storage file upload --account-name {3} --sas-token \"{4}\" --share-name {5} --source ffmpegscript.sh', parameters('functionAppStorageAccountName'), listAccountSas(parameters('functionAppStorageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('blobContainerName'), parameters('storageAccountName'), listAccountSas(parameters('storageAccountId'), parameters('storageAccountApiVersion'), variables('fileSasDefinition')).accountSasToken, parameters('fileShareName'))]",
+                "scriptContent": "[format('wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/functionApp.zip -O functionApp.zip  && az storage blob upload --account-name {0} --sas-token \"{1}\" --container-name {2} --name functionApp.zip --type block --file functionApp.zip --overwrite true && wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/ffmpegscript.sh -O ffmpegscript.sh && az storage file upload --account-name {3} --sas-token \"{4}\" --share-name {5} --source ffmpegscript.sh && wget https://github.com/Tommaso23/Azure-Media-Services-environment/raw/master/code/webApp.zip -O webApp.zip && az storage blob upload --account-name {6} --sas-token \"{7}\" --container-name {8} --name webApp.zip --type block --file webApp.zip --overwrite true', parameters('functionAppStorageAccountName'), listAccountSas(parameters('functionAppStorageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('blobContainerName'), parameters('storageAccountName'), listAccountSas(parameters('storageAccountId'), parameters('storageAccountApiVersion'), variables('fileSasDefinition')).accountSasToken, parameters('fileShareName'), parameters('functionAppStorageAccountName'), listAccountSas(parameters('functionAppStorageAccountId'), parameters('storageAccountApiVersion'), variables('sasDefinition')).accountSasToken, parameters('blobContainerName'))]",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"
               }
