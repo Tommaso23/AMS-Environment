@@ -43,4 +43,5 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
 }
 
-output blobUrl string = 'https://${functionAppStorageAccountName}.blob.core.windows.net/${blobContainerName}/functionApp.zip'
+output functionReleaseBlobUrl string = 'https://${functionAppStorageAccountName}.blob.core.windows.net/${blobContainerName}/functionApp.zip'
+output webAppReleaseBlobUrl string = 'htpps://${functionAppStorageAccountName}.blob.core.windows.net/${blobContainerName}/webApp.zip'

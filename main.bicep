@@ -28,6 +28,10 @@ var webAppSettings = [
     value: blobContainerName 
   }
   {
+    name: 'WEBSITE_RUN_FROM_PACKAGE_BLOB_MI_RESOURCE_ID'
+    value: deploymentScript.outputs.webAppReleaseBlobUrl
+  }
+  {
     name: 'XDT_MicrosoftApplicationInsights_Mode'
     value: 'Recommended'
   }
@@ -137,7 +141,7 @@ var appSettings = [
   }
   {
     name: 'WEBSITE_RUN_FROM_PACKAGE'
-    value: deploymentScript.outputs.blobUrl
+    value: deploymentScript.outputs.functionReleaseBlobUrl
   }
   {
     name: 'CONTAINER_INSTANCE_NAME'
