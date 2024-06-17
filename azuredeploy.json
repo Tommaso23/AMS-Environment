@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6328600721012963770"
+      "templateHash": "13127527848335556620"
     }
   },
   "variables": {
@@ -399,7 +399,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "9386914860191986628"
+              "templateHash": "17089684912312985612"
             }
           },
           "parameters": {
@@ -475,7 +475,7 @@
             },
             "webAppReleaseBlobUrl": {
               "type": "string",
-              "value": "[format('htpps://{0}.blob.core.windows.net/{1}/webApp.zip', parameters('functionAppStorageAccountName'), parameters('blobContainerName'))]"
+              "value": "[format('https://{0}.blob.core.windows.net/{1}/webApp.zip', parameters('functionAppStorageAccountName'), parameters('blobContainerName'))]"
             }
           }
         }
