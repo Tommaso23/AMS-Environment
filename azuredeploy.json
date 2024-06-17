@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9379659121835339138"
+      "templateHash": "6328600721012963770"
     }
   },
   "variables": {
@@ -1832,7 +1832,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "15683705267915801395"
+              "templateHash": "8191044933410584176"
             }
           },
           "parameters": {
@@ -1840,7 +1840,8 @@
               "type": "array",
               "defaultValue": [
                 "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
+                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
               ]
             },
             "roleName": {
