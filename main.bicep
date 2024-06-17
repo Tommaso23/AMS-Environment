@@ -43,6 +43,10 @@ var webAppSettings = [
     name: 'FUNCTIONAPP_API_URL'
     value: 'https://${toLower(functionappName)}.azurewebsites.net'
   }
+  {
+    name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageAccountKey};EndpointSuffix=core.windows.net'
+  }
 ]
 var appSettings = [
   {
