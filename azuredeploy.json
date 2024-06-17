@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6348843012239256268"
+      "templateHash": "9379659121835339138"
     }
   },
   "variables": {
@@ -977,6 +977,10 @@
               {
                 "name": "FUNCTIONAPP_API_URL",
                 "value": "[format('https://{0}.azurewebsites.net', toLower(variables('functionappName')))]"
+              },
+              {
+                "name": "WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING",
+                "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', variables('storageAccountName'), reference(resourceId('Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').outputs.storageAccountKey.value)]"
               }
             ]
           }
@@ -1073,7 +1077,8 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploymentScript')]"
+        "[resourceId('Microsoft.Resources/deployments', 'deploymentScript')]",
+        "[resourceId('Microsoft.Resources/deployments', 'storageAccount')]"
       ]
     },
     {
