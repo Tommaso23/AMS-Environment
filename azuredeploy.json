@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17143397839018753662"
+      "templateHash": "6348843012239256268"
     }
   },
   "variables": {
@@ -33,24 +33,6 @@
     "sqlcontainerPresetsName": "EncoderPresets",
     "containerInstanceName": "[format('ci-mediaservices-{0}', variables('uniqueId'))]",
     "loadPresetDeploymentScriptName": "[format('loadpredep-mediaservices-{0}', variables('uniqueId'))]",
-    "webAppSettings": [
-      {
-        "name": "ENCODER_ASSETS_STORAGE_CONTAINER_NAME",
-        "value": "[variables('blobContainerName')]"
-      },
-      {
-        "name": "XDT_MicrosoftApplicationInsights_Mode",
-        "value": "Recommended"
-      },
-      {
-        "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
-        "value": "~3"
-      },
-      {
-        "name": "FUNCTIONAPP_API_URL",
-        "value": "[format('https://{0}.azurewebsites.net', toLower(variables('functionappName')))]"
-      }
-    ],
     "storageBlobReaderRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
     "contributorRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
   },
@@ -417,7 +399,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "17312538801843220339"
+              "templateHash": "9386914860191986628"
             }
           },
           "parameters": {
@@ -487,9 +469,13 @@
             }
           ],
           "outputs": {
-            "blobUrl": {
+            "functionReleaseBlobUrl": {
               "type": "string",
               "value": "[format('https://{0}.blob.core.windows.net/{1}/functionApp.zip', parameters('functionAppStorageAccountName'), parameters('blobContainerName'))]"
+            },
+            "webAppReleaseBlobUrl": {
+              "type": "string",
+              "value": "[format('htpps://{0}.blob.core.windows.net/{1}/webApp.zip', parameters('functionAppStorageAccountName'), parameters('blobContainerName'))]"
             }
           }
         }
@@ -846,7 +832,7 @@
               },
               {
                 "name": "WEBSITE_RUN_FROM_PACKAGE",
-                "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploymentScript'), '2022-09-01').outputs.blobUrl.value]"
+                "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploymentScript'), '2022-09-01').outputs.functionReleaseBlobUrl.value]"
               },
               {
                 "name": "CONTAINER_INSTANCE_NAME",
@@ -971,7 +957,28 @@
             "value": "[variables('functionappAppServicePlanName')]"
           },
           "webAppSettings": {
-            "value": "[variables('webAppSettings')]"
+            "value": [
+              {
+                "name": "ENCODER_ASSETS_STORAGE_CONTAINER_NAME",
+                "value": "[variables('blobContainerName')]"
+              },
+              {
+                "name": "WEBSITE_RUN_FROM_PACKAGE_BLOB_MI_RESOURCE_ID",
+                "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploymentScript'), '2022-09-01').outputs.webAppReleaseBlobUrl.value]"
+              },
+              {
+                "name": "XDT_MicrosoftApplicationInsights_Mode",
+                "value": "Recommended"
+              },
+              {
+                "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+                "value": "~3"
+              },
+              {
+                "name": "FUNCTIONAPP_API_URL",
+                "value": "[format('https://{0}.azurewebsites.net', toLower(variables('functionappName')))]"
+              }
+            ]
           }
         },
         "template": {
