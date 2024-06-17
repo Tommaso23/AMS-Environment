@@ -4,6 +4,7 @@ param actions array = [
   //'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
   'Microsoft.DocumentDB/databaseAccounts/readMetadata'
   'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
 ]
 param roleName string = 'CosmosDBReadWriteRole'
 param cosmosdbAccountId string
