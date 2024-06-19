@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13127527848335556620"
+      "templateHash": "4111979758925064083"
     }
   },
   "variables": {
@@ -963,7 +963,7 @@
                 "value": "[variables('blobContainerName')]"
               },
               {
-                "name": "WEBSITE_RUN_FROM_PACKAGE_BLOB_MI_RESOURCE_ID",
+                "name": "WEBSITE_RUN_FROM_PACKAGE",
                 "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploymentScript'), '2022-09-01').outputs.webAppReleaseBlobUrl.value]"
               },
               {
@@ -977,6 +977,10 @@
               {
                 "name": "FUNCTIONAPP_API_URL",
                 "value": "[format('https://{0}.azurewebsites.net', toLower(variables('functionappName')))]"
+              },
+              {
+                "name": "WEBSITE_MOUNT_ENABLED",
+                "value": "1"
               },
               {
                 "name": "WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING",
@@ -1274,7 +1278,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "7606273615610942175"
+              "templateHash": "10774482699004539558"
             }
           },
           "parameters": {
@@ -1292,7 +1296,7 @@
               "name": "[parameters('functionappAppServicePlanName')]",
               "location": "[parameters('location')]",
               "sku": {
-                "name": "B1"
+                "name": "B3"
               },
               "kind": "linux",
               "properties": {
