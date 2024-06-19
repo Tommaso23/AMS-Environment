@@ -28,7 +28,7 @@ var webAppSettings = [
     value: blobContainerName 
   }
   {
-    name: 'WEBSITE_RUN_FROM_PACKAGE_BLOB_MI_RESOURCE_ID'
+    name: 'WEBSITE_RUN_FROM_PACKAGE'
     value: deploymentScript.outputs.webAppReleaseBlobUrl
   }
   {
@@ -42,6 +42,10 @@ var webAppSettings = [
   {
     name: 'FUNCTIONAPP_API_URL'
     value: 'https://${toLower(functionappName)}.azurewebsites.net'
+  }
+  {
+    name: 'WEBSITE_MOUNT_ENABLED'
+    value: '1'
   }
   {
     name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
