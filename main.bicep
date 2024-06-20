@@ -175,7 +175,7 @@ module functionAppStorageAccount 'modules/storageaccount.bicep'= {
   params: {
     location: location
     storageAccountName: functionAppStorageAccountName
-    isPublicAccessible: true //TODO: Modify it to False
+    isPublicAccessible: true //TODO: Init to TRUE for storing zip files, then switch to Private (FALSE)
   }
 }
 
@@ -308,6 +308,15 @@ module functionStorageRoleAssignment 'modules/roleassignment.bicep' = {
     functionApp
     deploymentScript
   ]
+}
+
+//assign storage blob data reader to WebApp
+module webappStorageRoleAssignment 'modules/roleassignment.bicep' = {
+  name: 'webappStorageRoleAssignment'
+  params: {
+    roleDefinitionId: storageBlobReaderRoleDefinitionId
+    principalId: webApp.outputs.principalId
+  }
 }
 
 //assign contributor role to functionApp
