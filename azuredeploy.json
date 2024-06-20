@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4111979758925064083"
+      "templateHash": "14930021691339643706"
     }
   },
   "variables": {
@@ -1278,7 +1278,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "10774482699004539558"
+              "templateHash": "4932510056075552945"
             }
           },
           "parameters": {
@@ -1296,7 +1296,7 @@
               "name": "[parameters('functionappAppServicePlanName')]",
               "location": "[parameters('location')]",
               "sku": {
-                "name": "B3"
+                "name": "P1v3"
               },
               "kind": "linux",
               "properties": {
