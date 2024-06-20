@@ -5,7 +5,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: functionappAppServicePlanName
   location: location
   sku: {
-    name: 'B3'
+    name: 'P1v3'
   }
   kind: 'linux'
   properties: {
