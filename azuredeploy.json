@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14930021691339643706"
+      "templateHash": "2668532916940962303"
     }
   },
   "variables": {
@@ -1140,6 +1140,62 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'deploymentScript')]",
         "[resourceId('Microsoft.Resources/deployments', 'functionApp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "webappStorageRoleAssignment",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinitionId": {
+            "value": "[variables('storageBlobReaderRoleDefinitionId')]"
+          },
+          "principalId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'webApp'), '2022-09-01').outputs.principalId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "11986606467242402142"
+            }
+          },
+          "parameters": {
+            "roleDefinitionId": {
+              "type": "string"
+            },
+            "principalId": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "roleAssignmentName": "[guid(parameters('roleDefinitionId'), parameters('principalId'), resourceGroup().id)]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[variables('roleAssignmentName')]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'webApp')]"
       ]
     },
     {
