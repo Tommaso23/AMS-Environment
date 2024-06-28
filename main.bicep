@@ -129,10 +129,7 @@ var appSettings = [
     name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
     value: 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=${functionAppStorageAccountName};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
   }
-  {
-    name: 'WEBSITE_CONTENTSHARE'
-    value: toLower(functionappName)
-  }
+  
   {
     name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
     value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageAccountKey};EndpointSuffix=core.windows.net'
@@ -141,6 +138,10 @@ var appSettings = [
   {
     name: 'WEBSITE_MOUNT_ENABLED'
     value: '1'
+  }
+    {
+    name: 'WEBSITE_CONTENTSHARE'
+    value: toLower(functionappName)
   }
   */
   {
