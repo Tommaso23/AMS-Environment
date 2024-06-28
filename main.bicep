@@ -43,10 +43,12 @@ var webAppSettings = [
     name: 'FUNCTIONAPP_API_URL'
     value: 'https://${toLower(functionappName)}.azurewebsites.net'
   }
+  /*
   {
     name: 'WEBSITE_MOUNT_ENABLED'
     value: '1'
   }
+    */
   {
     name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
     value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageAccountKey};EndpointSuffix=core.windows.net'
@@ -135,10 +137,12 @@ var appSettings = [
     name: 'WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING'
     value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.outputs.storageAccountKey};EndpointSuffix=core.windows.net'
   }
+  /*
   {
     name: 'WEBSITE_MOUNT_ENABLED'
     value: '1'
   }
+  */
   {
     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
     value: 'InstrumentationKey=${applicationInsights.outputs.instrumentationKey}'
