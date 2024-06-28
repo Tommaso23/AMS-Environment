@@ -139,11 +139,12 @@ var appSettings = [
     name: 'WEBSITE_MOUNT_ENABLED'
     value: '1'
   }
-    {
+  */
+  {
     name: 'WEBSITE_CONTENTSHARE'
     value: toLower(functionappName)
   }
-  */
+  
   {
     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
     value: 'InstrumentationKey=${applicationInsights.outputs.instrumentationKey}'
