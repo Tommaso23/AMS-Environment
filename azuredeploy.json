@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2668532916940962303"
+      "templateHash": "7174087827011904710"
     }
   },
   "variables": {
@@ -819,10 +819,6 @@
                 "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', variables('storageAccountName'), reference(resourceId('Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').outputs.storageAccountKey.value)]"
               },
               {
-                "name": "WEBSITE_MOUNT_ENABLED",
-                "value": "1"
-              },
-              {
                 "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
                 "value": "[format('InstrumentationKey={0}', reference(resourceId('Microsoft.Resources/deployments', 'applicationInsights'), '2022-09-01').outputs.instrumentationKey.value)]"
               },
@@ -977,10 +973,6 @@
               {
                 "name": "FUNCTIONAPP_API_URL",
                 "value": "[format('https://{0}.azurewebsites.net', toLower(variables('functionappName')))]"
-              },
-              {
-                "name": "WEBSITE_MOUNT_ENABLED",
-                "value": "1"
               },
               {
                 "name": "WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING",
