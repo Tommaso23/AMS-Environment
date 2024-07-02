@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17062052467968819542"
+      "templateHash": "3859378065200956688"
     }
   },
   "variables": {
@@ -813,6 +813,10 @@
               {
                 "name": "WEBSITE_ENCODERASSETSSTORAGECONNECTIONSTRING",
                 "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', variables('storageAccountName'), reference(resourceId('Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').outputs.storageAccountKey.value)]"
+              },
+              {
+                "name": "WEBSITE_CONTENTSHARE",
+                "value": "[toLower(variables('functionappName'))]"
               },
               {
                 "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
