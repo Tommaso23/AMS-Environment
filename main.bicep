@@ -60,6 +60,10 @@ var appSettings = [
     value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};AccountKey=${functionAppStorageAccount.outputs.storageAccountKey}'
   }
   {
+    name: 'CDN_ENDPOINT_HOSTNAME'
+    value: cdnEndpoint.name //TODO: check if it's correct
+  }
+  {
     name: 'COSMOS_DB_AUTH_KEY'
     value: cosmosdbaccount.outputs.cosmosdbauthentificationKey
   }
