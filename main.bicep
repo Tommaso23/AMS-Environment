@@ -61,7 +61,7 @@ var appSettings = [
   }
   {
     name: 'CDN_ENDPOINT_HOSTNAME'
-    value: cdnEndpoint.name //TODO: check if it's correct
+    value: 'https://${cdnEndpointName}.azureedge.net' //TODO: check if it's correct
   }
   {
     name: 'COSMOS_DB_AUTH_KEY'
