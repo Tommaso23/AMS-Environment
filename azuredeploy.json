@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "3859378065200956688"
+      "templateHash": "17574692956061303141"
     }
   },
   "variables": {
@@ -743,6 +743,10 @@
                 "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', variables('functionAppStorageAccountName'), reference(resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount'), '2022-09-01').outputs.storageAccountKey.value)]"
               },
               {
+                "name": "CDN_ENDPOINT_HOSTNAME",
+                "value": "cdnEndpoint"
+              },
+              {
                 "name": "COSMOS_DB_AUTH_KEY",
                 "value": "[reference(resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount'), '2022-09-01').outputs.cosmosdbauthentificationKey.value]"
               },
@@ -927,6 +931,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'applicationInsights')]",
+        "[resourceId('Microsoft.Resources/deployments', 'cdnEndpoint')]",
         "[resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount')]",
         "[resourceId('Microsoft.Resources/deployments', 'deploymentScript')]",
         "[resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount')]",
