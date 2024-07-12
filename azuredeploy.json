@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17574692956061303141"
+      "templateHash": "9490635232123629473"
     }
   },
   "variables": {
@@ -744,7 +744,7 @@
               },
               {
                 "name": "CDN_ENDPOINT_HOSTNAME",
-                "value": "cdnEndpoint"
+                "value": "[format('https://{0}.azureedge.net', variables('cdnEndpointName'))]"
               },
               {
                 "name": "COSMOS_DB_AUTH_KEY",
@@ -931,7 +931,6 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'applicationInsights')]",
-        "[resourceId('Microsoft.Resources/deployments', 'cdnEndpoint')]",
         "[resourceId('Microsoft.Resources/deployments', 'cosmosdbaccount')]",
         "[resourceId('Microsoft.Resources/deployments', 'deploymentScript')]",
         "[resourceId('Microsoft.Resources/deployments', 'functionAppStorageAccount')]",
