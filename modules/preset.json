@@ -1,0 +1,5 @@
+{
+    "Name": "TestDepl2",
+    "Description": "libx264 encoding at 1280x720 resolution",
+    "PresetParameters": "-i ##MOUNTPOINT##/##FILENAME -c:v libx264 -b:v 2000k -b:a 128k -f dash ##MOUNTPOINT/##JOB_ID##/output/manifest.mpd"
+}
